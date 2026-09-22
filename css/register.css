@@ -1,0 +1,486 @@
+/* css/register.css */
+
+:root {
+    --color-primary: #2563EB;
+    --color-primary-dark: #1D4ED8;
+    --color-primary-light: #EFF6FF;
+    --color-background: #F8FAFC;
+    --color-surface: #FFFFFF;
+    --color-text-primary: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-muted: #94A3B8;
+    --color-error: #EF4444;
+    --color-success: #22C55E;
+    --color-border: #E2E8F0;
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-xl: 12px;
+    --space-1: 4px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #F8FAFC 100%);
+    font-family: var(--font-family);
+    padding: var(--space-6);
+    position: relative;
+    overflow-y: auto;
+    min-height: 100vh;
+}
+
+/* Background Shapes with Animation */
+.bg-shape {
+    position: fixed;
+    border-radius: 50%;
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+.shape-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--color-primary);
+    top: -100px;
+    right: -100px;
+    animation: floatShape1 8s ease-in-out infinite;
+}
+
+.shape-2 {
+    width: 300px;
+    height: 300px;
+    background: #7C3AED;
+    bottom: -80px;
+    left: -80px;
+    animation: floatShape2 10s ease-in-out infinite reverse;
+}
+
+.shape-3 {
+    width: 200px;
+    height: 200px;
+    background: var(--color-primary-light);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.08;
+    animation: floatShape3 12s ease-in-out infinite;
+}
+
+@keyframes floatShape1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-20px, -30px); }
+}
+
+@keyframes floatShape2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(25px, 20px); }
+}
+
+@keyframes floatShape3 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+    z-index: 1;
+    padding: var(--space-4) 0;
+}
+
+/* Glassmorphism Card */
+.auth-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-6);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: var(--space-4);
+}
+
+.auth-logo a {
+    display: inline-block;
+}
+
+.auth-logo img {
+    height: 85px;
+    width: auto;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--space-4);
+}
+
+.auth-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.auth-header p {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+}
+
+/* Floating Input Group */
+.input-group {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    height: 48px;
+    outline: none;
+    border: 1.5px solid #94A3B8;
+    border-radius: var(--radius-md);
+    background: transparent;
+    padding: var(--space-3) var(--space-3);
+    padding-top: var(--space-3);
+    padding-right: 50px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-group input[type="date"] {
+    padding-top: var(--space-3);
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+#dob {
+    padding: 12px;
+}
+
+/* Floating Label */
+.input-group label {
+    position: absolute;
+    top: 50%;
+    left: var(--space-3);
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background: transparent;
+    padding: 0 4px;
+    transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease, font-weight 0.3s ease, background 0.3s ease;
+}
+
+.input-group label i {
+    margin-right: 6px;
+}
+
+.input-group label .optional {
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
+    top: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: #F6F9FF;
+    border-radius: var(--radius-sm);
+}
+
+/* Toggle Password Button */
+.toggle-password {
+    position: absolute;
+    right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0;
+    z-index: 2;
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: var(--color-primary);
+}
+
+/* Select Group */
+.select-group {
+    position: relative;
+    width: 100%;
+    margin-bottom: 22px;
+}
+
+.select-group select {
+    width: 100%;
+    height: 55px;
+    outline: none;
+    border: 1.5px solid #94A3B8;
+    border-radius: var(--radius-md);
+    background: transparent;
+    padding: var(--space-3) var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    appearance: none;
+    cursor: pointer;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.select-group select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.select-group select option {
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+}
+
+.select-group label {
+    position: absolute;
+    top: -7px;
+    left: var(--space-3);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: #F6F9FF;
+    padding: 0 6px;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+}
+
+.select-group label i {
+    margin-right: 6px;
+}
+
+/* Radio Group */
+.radio-group {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: var(--space-4) var(--space-3);
+    border: 1.5px solid #94A3B8;
+    border-radius: var(--radius-md);
+    background: transparent;
+    transition: border 0.3s ease;
+    position: relative;
+}
+
+.radio-group:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.radio-label {
+    position: absolute;
+    top: -7px;
+    left: var(--space-3);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: #F6F9FF;
+    padding: 0 6px;
+    border-radius: var(--radius-sm);
+}
+
+.radio-label i {
+    margin-right: 6px;
+}
+
+.radio-options {
+    display: flex;
+    gap: var(--space-6);
+    margin-top: var(--space-1);
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+/* Error Message */
+#error-msg {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: #FEF2F2;
+    border: 1px solid var(--color-error);
+    border-radius: var(--radius-md);
+    color: var(--color-error);
+    font-size: 0.85rem;
+    margin-bottom: var(--space-4);
+    animation: slideDown 0.3s ease;
+}
+
+#error-msg i {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 0.7rem;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: var(--space-1);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.auth-btn:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.auth-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.auth-btn.btn-loading {
+    opacity: 0.8;
+}
+
+.auth-btn.btn-success {
+    background: var(--color-success);
+}
+
+.auth-btn .btn-spinner {
+    display: none;
+}
+
+.auth-btn .btn-spinner i {
+    font-size: 1rem;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(226, 232, 240, 0.5);
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.auth-footer a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+.auth-footer a i {
+    font-size: 0.75rem;
+    margin-left: 2px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: var(--space-6) var(--space-4);
+    }
+
+    .auth-logo img {
+        height: 50px;
+    }
+
+    .bg-shape {
+        display: none;
+    }
+
+    .radio-options {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .auth-container {
+        padding: var(--space-2) 0;
+    }
+}

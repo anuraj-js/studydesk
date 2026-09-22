@@ -1,0 +1,331 @@
+/* css/progress.css */
+
+.progress-section {
+    margin: var(--space-4) 0;
+}
+
+.progress-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+    color: var(--color-text-primary);
+}
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-3);
+}
+
+.progress-stat-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.progress-stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.progress-stat-card .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+}
+
+.progress-stat-card .stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+}
+
+.progress-stat-card .stat-icon {
+    font-size: 1.2rem;
+    margin-bottom: var(--space-1);
+}
+
+.progress-stat-card .stat-icon.tasks           { color: var(--color-primary); }
+.progress-stat-card .stat-icon.exams-created   { color: var(--color-secondary); }
+.progress-stat-card .stat-icon.topics          { color: var(--color-success); }
+.progress-stat-card .stat-icon.exams-completed { color: var(--color-warning); }
+.progress-stat-card .stat-icon.pomodoro        { color: var(--color-error); }
+
+/* Progress Extra */
+.progress-extra {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+/* Streak Section */
+.streak-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.streak-section .streak-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Wrapper for milestone labels + bar */
+.streak-bar-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 18px;
+}
+
+.streak-milestones {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 16px;
+}
+
+.milestone-dot {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    transition: color 0.4s ease;
+    white-space: nowrap;
+}
+
+.milestone-dot:last-child  { transform: translateX(-100%); }
+.milestone-dot:first-child { transform: translateX(-4px); }
+
+.milestone-dot.passed                             { color: #F59E0B; }
+.milestone-dot.passed.streak-color-red            { color: #EF4444; }
+.milestone-dot.passed.streak-color-deep-red       { color: #DC2626; }
+.milestone-dot.passed.streak-color-gradient-fire  {
+    background: linear-gradient(90deg, #F59E0B, #EF4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Bar Track */
+.streak-bar-track {
+    width: 100%;
+    height: 8px;
+    background: var(--color-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Bar Fill */
+.streak-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+    width: 0%;
+}
+
+.streak-bar-fill.streak-color-orange        { background: #F59E0B; }
+.streak-bar-fill.streak-color-red           { background: #EF4444; }
+.streak-bar-fill.streak-color-deep-red      { background: #DC2626; box-shadow: 0 0 8px rgba(220, 38, 38, 0.5); }
+.streak-bar-fill.streak-color-gradient-fire {
+    background: linear-gradient(90deg, #F59E0B, #EF4444, #DC2626);
+    background-size: 200% 100%;
+    animation: fireShift 2s ease-in-out infinite;
+}
+.streak-bar-fill.streak-color-none          { background: var(--color-border); }
+
+/* Streak number — default for long messages */
+.streak-section .streak-number {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+    flex-wrap: nowrap;
+}
+
+/* Larger size only for active streak e.g. "89 days" */
+.streak-section .streak-number.streak-active {
+    font-size: 1.2rem;
+}
+
+/* Safe today checkmark */
+.streak-safe-icon {
+    color: var(--color-success);
+    font-size: 0.95rem;
+}
+
+/* At-risk warning icon */
+.streak-atrisk-icon {
+    color: #F59E0B;
+    animation: iconPulse 1.5s ease-in-out infinite;
+}
+
+/* Next milestone label */
+.streak-next-milestone {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* Longest streak */
+.streak-longest {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+}
+
+.streak-based-on {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    opacity: 0.8;
+    margin-top: var(--space-1);
+}
+
+/* Productive Section */
+.productive-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.productive-section .productive-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.productive-section .productive-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.productive-section .productive-count {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.productive-section .last-active-label {
+    margin-top: var(--space-3);
+}
+
+.productive-section .last-active-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Loading Skeleton */
+.progress-stat-card.loading .stat-number {
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+    min-height: 28px;
+    width: 60%;
+    margin: 0 auto;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.progress-stat-card.loading .stat-label {
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+    min-height: 14px;
+    width: 40%;
+    margin: 4px auto 0;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.progress-extra .skeleton {
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Icon Styles */
+.streak-section .streak-label .fa-fire {
+    color: #EF4444;
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.3));
+}
+
+.streak-section .streak-number .fa-undo       { color: #EF4444; }
+.streak-section .streak-number .fa-plus-circle {
+    color: #10B981;
+    animation: iconScaleIn 1s ease-out;
+}
+
+.streak-longest .fa-trophy {
+    color: #F59E0B;
+    animation: iconGlow 2.5s ease-in-out infinite;
+}
+
+.productive-section .productive-label .fa-chart-line { color: #8B5CF6; }
+
+/* Animations */
+@keyframes fireShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.2); }
+}
+
+@keyframes iconScaleIn {
+    0%   { transform: scale(0); opacity: 0; }
+    60%  { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes iconGlow {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.3)); }
+    50%       { filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.6)); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .progress-stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .progress-stats { grid-template-columns: repeat(2, 1fr); }
+
+    .progress-extra {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        padding: var(--space-3);
+    }
+
+    .progress-stat-card .stat-number              { font-size: 1.5rem; }
+    .streak-section .streak-number                { font-size: 0.9rem; }
+    .streak-section .streak-number.streak-active  { font-size: 1rem; }
+    .productive-section .productive-value         { font-size: 0.8rem; }
+}
+
+@media (max-width: 400px) {
+    .progress-stats { grid-template-columns: 1fr 1fr; }
+}

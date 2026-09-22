@@ -1,0 +1,404 @@
+/* css/help.css */
+
+.help-page {
+    margin-top: 1rem;
+}
+
+/* Page Header — Centered */
+.page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+}
+
+.page-header-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-lg);
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.page-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.page-subtitle {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* Search Bar */
+.help-search {
+    max-width: 700px;
+    margin: 0 auto 1.5rem;
+}
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.4rem 0.75rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.search-wrapper:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.search-wrapper i {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+
+.search-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+}
+
+.search-wrapper input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.clear-search {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 0.2rem;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.clear-search:hover {
+    color: var(--color-error);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.search-info {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+
+.search-info.has-results {
+    color: var(--color-text-secondary);
+}
+
+.search-info.no-results {
+    color: var(--color-error);
+    border-color: var(--color-error);
+    background: #FEF2F2;
+}
+
+/* Help Container */
+.help-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Help Section */
+.help-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-3);
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.help-section.hidden {
+    display: none;
+}
+
+.help-toggle {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--color-surface);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-family);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    transition: background 0.2s ease;
+}
+
+.help-toggle:hover {
+    background: var(--color-primary-light);
+}
+
+.help-toggle span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.help-toggle span i {
+    color: var(--color-primary);
+    width: 20px;
+    text-align: center;
+}
+
+.help-toggle .fa-chevron-down {
+    color: var(--color-text-muted);
+    transition: transform 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.help-section.open .help-toggle .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+.help-content {
+    display: none;
+    padding: 0 1rem 1rem 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.help-section.open .help-content {
+    display: block;
+}
+
+.help-content p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin: 0.75rem 0 0.5rem 0;
+}
+
+.help-content ul {
+    margin: 0.5rem 0;
+    padding-left: 1.25rem;
+    list-style: none;
+}
+
+.help-content ul li {
+    font-size: 0.88rem;
+    color: var(--color-text-primary);
+    padding: 0.2rem 0;
+    position: relative;
+}
+
+.help-content ul li::before {
+    content: '';
+    position: absolute;
+    left: -1rem;
+    top: 0.6rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    opacity: 0.4;
+}
+
+.help-content ul li strong {
+    color: var(--color-text-primary);
+}
+
+/* Streak Rules */
+.help-rules {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+}
+
+.help-rules p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-1);
+}
+
+.help-rules ul {
+    margin: 0.25rem 0 0 0;
+    padding-left: 1.25rem;
+    list-style: none;
+}
+
+.help-rules ul li {
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    padding: 0.15rem 0;
+    position: relative;
+    padding-left: 0;
+}
+
+/* Override the inherited dot bullet from .help-content ul li::before */
+.help-rules ul li::before {
+    content: '•';
+    position: absolute;
+    left: -1rem;
+    top: 0.15rem;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    color: var(--color-primary);
+    opacity: 0.6;
+}
+
+/* Shortcuts */
+.help-shortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.shortcut-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.shortcut-key {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    padding: 0.1rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-family: monospace;
+}
+
+.shortcut-none {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+/* Dark Mode Overrides */
+[data-dark="true"] .help-toggle:hover {
+    background: rgba(37, 99, 235, 0.1);
+}
+
+[data-dark="true"] .help-toggle span i {
+    color: var(--color-primary);
+}
+
+[data-dark="true"] .help-content ul li strong {
+    color: #E3E3E3;
+}
+
+[data-dark="true"] .shortcut-key {
+    background: #2A2A2A;
+    border-color: #383838;
+    color: #E3E3E3;
+}
+
+[data-dark="true"] .page-header-icon {
+    background: rgba(138, 174, 252, 0.15);
+}
+
+[data-dark="true"] .help-section {
+    background: var(--color-surface);
+}
+
+[data-dark="true"] .search-info {
+    background: var(--color-surface);
+}
+
+[data-dark="true"] .help-rules ul li {
+    color: #A0A0A0;
+}
+
+[data-dark="true"] .help-rules ul li::before {
+    color: var(--color-primary);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .page-header-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .page-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .help-toggle {
+        font-size: 0.85rem;
+        padding: 0.6rem 0.75rem;
+    }
+
+    .help-content {
+        padding: 0 0.75rem 0.75rem 0.75rem;
+    }
+
+    .help-content ul li {
+        font-size: 0.82rem;
+    }
+
+    .help-rules ul li {
+        font-size: 0.78rem;
+    }
+
+    .help-shortcuts {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+    }
+
+    .search-wrapper {
+        padding: 0.3rem 0.6rem;
+    }
+
+    .search-wrapper input {
+        font-size: 1rem;
+    }
+
+    .search-info {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+}
