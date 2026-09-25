@@ -10,6 +10,11 @@ if (empty($_SESSION["user_id"])) {
     exit();
 }
 
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    echo json_encode(["success" => false, "message" => "Method not allowed", "data" => null]);
+    exit();
+}
+
 $userId = $_SESSION["user_id"];
 $examId = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 
