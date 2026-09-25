@@ -8,7 +8,7 @@ function getDbConnection() {
     $name = getenv('DB_NAME') ?: 'studydesk_db';
     $user = getenv('DB_USER') ?: 'root';
     $pass = getenv('DB_PASS') ?: '';
-    $charset = getenv('DB_CHARSET') ?: 'utf8';
+    $charset = getenv('DB_CHARSET') ?: 'utf8mb4';
     
     $dsn = "mysql:host={$host};dbname={$name};charset={$charset}";
     
