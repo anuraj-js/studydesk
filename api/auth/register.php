@@ -159,7 +159,7 @@ if ($method === "POST") {
         $_SESSION["email"] = $email;
         $_SESSION["role"] = "user";
         $_SESSION["theme"] = "blue";
-        $_SESSION["dark_mode"] = false;
+        $_SESSION["dark_mode"] = 0;
 
         // Return success
         echo json_encode([
@@ -170,7 +170,7 @@ if ($method === "POST") {
                 "username" => $username,
                 "role" => "user",
                 "theme" => "blue",
-                "dark_mode" => false
+                "dark_mode" => 0
             ]
         ]);
         exit();
