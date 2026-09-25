@@ -6,7 +6,20 @@ header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
 
 if (empty($_SESSION["user_id"])) {
-    echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Unauthorized",
+        "data" => null
+    ]);
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    echo json_encode([
+        "success" => false,
+        "message" => "Method not allowed",
+        "data" => null
+    ]);
     exit();
 }
 
@@ -14,22 +27,30 @@ $userId = $_SESSION["user_id"];
 $taskId = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 
 if ($taskId <= 0) {
-    echo json_encode(["success" => false, "message" => "Task ID required", "data" => null]);
-    exit();
-}
-
-// Fetch task
-$sql = "SELECT id, title, type, due_date, created_at FROM tasks WHERE id = :id AND user_id = :user_id";
-$stmt = $pdo->prepare($sql);
-$stmt->execute(["id" => $taskId, "user_id" => $userId]);
-$task = $stmt->fetch();
-
-if (!$task) {
-    echo json_encode(["success" => false, "message" => "Task not found", "data" => null]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Task ID required",
+        "data" => null
+    ]);
     exit();
 }
 
 try {
+    // Fetch task
+    $sql = "SELECT id, title, type, due_date, created_at FROM tasks WHERE id = :id AND user_id = :user_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(["id" => $taskId, "user_id" => $userId]);
+    $task = $stmt->fetch();
+
+    if (!$task) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Task not found",
+            "data" => null
+        ]);
+        exit();
+    }
+
     $pdo->beginTransaction();
 
     // Insert into activity_history
@@ -62,7 +83,11 @@ try {
 
 } catch (PDOException $e) {
     $pdo->rollBack();
-    echo json_encode(["success" => false, "message" => "Failed to complete task", "data" => null]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Something went wrong. Please try again.",
+        "data" => null
+    ]);
     exit();
 }
 ?>
