@@ -84,6 +84,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return div.innerHTML;
     }
 
+    // Safely parse JSON details
+    function parseDetails(details) {
+        if (!details) return {};
+        if (typeof details !== 'string') return details;
+        try {
+            return JSON.parse(details);
+        } catch (e) {
+            return {};
+        }
+    }
+
     // Highlight matching text
     function highlightText(text, query) {
         if (!query || !text) return text;
@@ -99,9 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const terms = query.split(/\s+/);
 
         return activities.filter(activity => {
-            const details = typeof activity.details === 'string'
-                ? JSON.parse(activity.details)
-                : activity.details;
+            const details = parseDetails(activity.details);
 
             const displayText = getActivityDisplay(activity.type, activity.item_name, details);
 
@@ -155,9 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="date-header">${formatDateHeader(dateKey)}</div>
             `;
             items.forEach(activity => {
-                const details = typeof activity.details === 'string'
-                    ? JSON.parse(activity.details)
-                    : activity.details;
+                const details = parseDetails(activity.details);
 
                 const displayText = getActivityDisplay(activity.type, activity.item_name, details);
                 const highlightedText = highlightText(escapeHtml(displayText), searchQuery);
