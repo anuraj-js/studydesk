@@ -47,12 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isSavingState) {
             saveBtn.classList.add('saving');
             saveBtn.classList.remove('saved');
-            saveBtnText.textContent = 'Saving...';
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span id="saveBtnText">Saving...</span> <span class="keyboard-hint">(Ctrl+S)</span>';
-            const hint = saveBtn.querySelector('.keyboard-hint');
-            if (!hint) {
-                saveBtn.innerHTML += ' <span class="keyboard-hint">(Ctrl+S)</span>';
-            }
         } else {
             saveBtn.classList.remove('saving');
         }
@@ -62,16 +57,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function setSaved() {
         saveBtn.classList.remove('saving');
         saveBtn.classList.add('saved');
-        saveBtnText.textContent = 'Saved!';
         saveBtn.innerHTML = '<i class="fas fa-check"></i> <span id="saveBtnText">Saved!</span> <span class="keyboard-hint">(Ctrl+S)</span>';
 
         setTimeout(() => {
             if (!isSaving) {
                 saveBtn.classList.remove('saved');
-                saveBtnText.textContent = 'Save Now';
                 saveBtn.innerHTML = '<i class="fas fa-save"></i> <span id="saveBtnText">Save Now</span> <span class="keyboard-hint">(Ctrl+S)</span>';
             }
         }, 2000);
+    }
+
+    // Reset save button to default state
+    function resetSaveBtn() {
+        saveBtn.classList.remove('saving', 'saved');
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> <span id="saveBtnText">Save Now</span> <span class="keyboard-hint">(Ctrl+S)</span>';
     }
 
     // Save note
@@ -134,11 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Debounced auto-save
     function debouncedSave() {
         clearTimeout(saveTimeout);
-        saveTimeout = setTimeout(() => {
+        saveTimeout = setTimeout(async () => {
             const content = textarea.value;
             if (content !== lastSavedContent) {
-                saveNote();
-                showToast('Note auto-saved.', 'info');
+                const saved = await saveNote();
+                if (saved) {
+                    showToast('Note auto-saved.', 'info');
+                }
             }
         }, 1200);
     }
