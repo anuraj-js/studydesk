@@ -78,6 +78,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <!-- ACCOUNT -->
         <div class="sidebar-nav-group">
             <div class="sidebar-nav-label">Account</div>
+            <a href="admin_profile.php" class="sidebar-nav-link <?php echo $currentPage == 'admin_profile.php' ? 'active' : ''; ?>">
+                <i class="fas fa-user"></i> Profile
+            </a>
+            <a href="admin_help.php" class="sidebar-nav-link <?php echo $currentPage == 'admin_help.php' ? 'active' : ''; ?>">
+                <i class="fas fa-life-ring"></i> Help & Support
+            </a>
             <a href="../../api/auth/logout.php" class="sidebar-nav-link logout">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
