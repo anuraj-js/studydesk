@@ -64,7 +64,7 @@
 
 [data-dark="true"] .profile-avatar {
     background: rgba(138, 174, 252, 0.15);
-    color: #60A5FA;
+    color: var(--color-primary);
 }
 
 .profile-username {

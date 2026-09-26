@@ -69,8 +69,8 @@
    STAT ICON VARIANTS
    ============================================ */
 .stat-card .stat-icon-users {
-    background: #EFF6FF;
-    color: #2563EB;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
 }
 
 .stat-card .stat-icon-tasks {
@@ -90,8 +90,8 @@
 
 /* Dark mode stat icons */
 [data-dark="true"] .stat-card .stat-icon-users {
-    background: rgba(37, 99, 235, 0.2);
-    color: #60A5FA;
+    background: rgba(var(--color-primary-rgb), 0.2);
+    color: var(--color-primary);
 }
 
 [data-dark="true"] .stat-card .stat-icon-tasks {
@@ -167,7 +167,6 @@
     height: 40px;
     border-radius: var(--radius-md);
     background: var(--color-surface);
-    color: var(--color-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -176,8 +175,11 @@
     transition: all 0.2s ease;
 }
 
-.quick-link:hover .quick-link-icon {
-    background: var(--color-primary);
+.quick-link-icon i {
+    color: var(--color-primary);
+}
+
+.quick-link:hover .quick-link-icon i {
     color: #fff;
     transform: scale(1.05);
 }
