@@ -180,7 +180,6 @@
 }
 
 .quick-link:hover .quick-link-icon i {
-    color: #fff;
     transform: scale(1.05);
 }
 
@@ -226,11 +225,14 @@
 
 [data-dark="true"] .quick-link-icon {
     background: rgba(138, 174, 252, 0.1);
-    color: #60A5FA;
 }
 
 [data-dark="true"] .quick-link:hover .quick-link-icon {
     background: var(--color-primary);
+    color: #fff;
+}
+
+[data-dark="true"] .quick-link:hover .quick-link-icon i {
     color: #fff;
 }
 
