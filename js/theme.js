@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let darkMode = html.dataset.dark === 'true';
     let isSaving = false;
 
+    // Detect base path: admin pages are one level deeper than user pages
+    function getBasePath() {
+        return window.location.pathname.includes('/admin/') ? '../../' : '../';
+    }
+
     // Store original button HTML for restoration
     themeBtns.forEach(btn => {
         btn.dataset.originalHtml = btn.innerHTML;
@@ -52,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateLogo(theme) {
         const logoImg = document.querySelector('.logo-img');
         if (logoImg) {
-            logoImg.src = `../images/studydesk_logo_${theme}.svg`;
+            logoImg.src = getBasePath() + `images/studydesk_logo_${theme}.svg`;
         }
     }
 
@@ -89,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setThemeLoading(true);
 
         try {
-            const response = await fetch('../api/theme/update.php', {
+            const response = await fetch(getBasePath() + 'api/theme/update.php', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
