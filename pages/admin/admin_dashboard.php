@@ -45,6 +45,11 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
                 </div>
             </div>
 
+            <!-- Welcome Greeting -->
+            <div class="admin-greeting">
+                Welcome back, <?php echo htmlspecialchars($_SESSION['username']); ?>!
+            </div>
+
             <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">

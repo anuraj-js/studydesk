@@ -2,6 +2,17 @@
 /* Dashboard-specific styles: stat cards, quick links */
 
 /* ============================================
+   WELCOME GREETING
+   ============================================ */
+.admin-greeting {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-4);
+    padding: var(--space-2) 0;
+}
+
+/* ============================================
    STATS GRID
    ============================================ */
 .stats-grid {
