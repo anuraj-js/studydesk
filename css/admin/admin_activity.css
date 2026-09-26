@@ -1,0 +1,166 @@
+/* css/admin/admin_activity.css */
+/* Activity log page specific styles: activity types, text cells, responsive table */
+
+/* ============================================
+   ACTIVITY TABLE - COLUMN POLISH
+   ============================================ */
+
+/* User column - clickable link */
+.admin-table .user-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    word-break: break-word;
+}
+
+.admin-table .user-link:hover {
+    text-decoration: underline;
+}
+
+/* Activity type cell - icon + label */
+.admin-table td:nth-child(2) {
+    white-space: nowrap;
+}
+
+.admin-table td:nth-child(2) i {
+    margin-right: 0.35rem;
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.activity-type-label {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    vertical-align: middle;
+}
+
+/* Activity text cell - item name + details */
+.admin-table .activity-text-cell {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    word-break: break-word;
+    max-width: 400px;
+}
+
+/* Date column - fixed width, muted */
+.admin-table td:nth-child(4) {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* Actions column - centered */
+.admin-table td:nth-child(5) {
+    text-align: center;
+}
+
+/* Smooth row hover with subtle left-border indicator */
+.admin-table tbody tr {
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-table tbody tr:hover {
+    box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+/* ============================================
+   FILTER POLISH
+   ============================================ */
+
+/* User filter select - wider to fit usernames */
+#userFilter {
+    min-width: 150px;
+    max-width: 220px;
+}
+
+/* Type filter select */
+#typeFilter {
+    min-width: 160px;
+}
+
+/* ============================================
+   EMPTY STATE POLISH
+   ============================================ */
+.admin-table .empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.4;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    /* Reduce table min-width for tablet */
+    .admin-table {
+        min-width: 550px;
+    }
+
+    /* Smaller paddings */
+    .admin-table th,
+    .admin-table td {
+        padding: 0.6rem 0.7rem;
+        font-size: 0.82rem;
+    }
+
+    /* Activity text wraps tighter */
+    .admin-table .activity-text-cell {
+        max-width: 250px;
+    }
+
+    /* Filters full-width on tablet */
+    .admin-filters .filter-group {
+        width: 100%;
+    }
+
+    .admin-filters .filter-group select {
+        flex: 1;
+    }
+
+    #userFilter,
+    #typeFilter {
+        min-width: 0;
+        max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Hide the "Actions" column on very small screens */
+    .admin-table th:nth-child(5),
+    .admin-table td:nth-child(5) {
+        display: none;
+    }
+
+    /* Reduce table min-width further */
+    .admin-table {
+        min-width: 420px;
+    }
+
+    /* Smaller fonts */
+    .admin-table th,
+    .admin-table td {
+        padding: 0.5rem 0.55rem;
+        font-size: 0.75rem;
+    }
+
+    .activity-type-label {
+        font-size: 0.75rem;
+    }
+
+    .admin-table .activity-text-cell {
+        font-size: 0.75rem;
+        max-width: 180px;
+    }
+
+    /* Smaller icons */
+    .admin-table td:nth-child(2) i {
+        font-size: 0.8rem;
+    }
+
+    /* Empty state */
+    .admin-table .empty-state i {
+        font-size: 2rem;
+    }
+}

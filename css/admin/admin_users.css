@@ -1,0 +1,174 @@
+/* css/admin/admin_users.css */
+/* Users page specific styles: table polish, delete modal enhancements */
+
+/* ============================================
+   USERS TABLE - SPECIFIC POLISH
+   ============================================ */
+
+/* Row number column - muted */
+.admin-table td:first-child {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Username column - bold */
+.admin-table .user-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Email column - muted */
+.admin-table .user-email {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Joined date column */
+.admin-table td:nth-child(5) {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* Actions column - centered */
+.admin-table .actions-cell {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Smooth hover effect */
+.admin-table tbody tr {
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-table tbody tr:hover {
+    box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+/* ============================================
+   DELETE MODAL ENHANCEMENTS
+   ============================================ */
+
+/* Target username display */
+#deleteTargetName {
+    color: var(--color-error);
+    font-weight: 700;
+    font-size: 1rem;
+    word-break: break-word;
+}
+
+/* Modal input group */
+.modal-input-group {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.modal-input-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.4rem;
+}
+
+.modal-input-group input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family);
+    font-size: 0.95rem;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-input-group input:focus {
+    outline: none;
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.modal-input-group input::placeholder {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
+/* Dark mode input */
+[data-dark="true"] .modal-input-group input {
+    background: #1A1A1A;
+    color: #E3E3E3;
+}
+
+/* ============================================
+   DELETE CONFIRM BUTTON STATES
+   ============================================ */
+
+/* Disabled state (before typing username) */
+.modal-actions .btn-danger:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: var(--color-error);
+    transform: none;
+}
+
+/* Enabled state (after typing username) */
+.modal-actions .btn-danger:not(:disabled):hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    /* Hide low-priority columns on tablet */
+    .admin-table td:first-child,
+    .admin-table th:first-child {
+        display: none;
+    }
+
+    .admin-table {
+        min-width: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Stack info more compactly */
+    .admin-table .user-name,
+    .admin-table .user-email {
+        font-size: 0.8rem;
+    }
+
+    .admin-table td:nth-child(5) {
+        font-size: 0.75rem;
+    }
+
+    /* Smaller action buttons */
+    .admin-table .btn-icon {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    /* Modal adjustments */
+    #deleteTargetName {
+        font-size: 0.9rem;
+    }
+
+    .modal-input-group input {
+        font-size: 0.9rem;
+        padding: 0.55rem 0.7rem;
+    }
+
+    .modal-actions {
+        flex-direction: column-reverse;
+        gap: var(--space-2);
+    }
+
+    .modal-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

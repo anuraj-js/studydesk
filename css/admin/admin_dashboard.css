@@ -1,0 +1,315 @@
+/* css/admin/admin_dashboard.css */
+/* Dashboard-specific styles: stat cards, quick links */
+
+/* ============================================
+   STATS GRID
+   ============================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+/* ============================================
+   STAT CARDS
+   ============================================ */
+.stat-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.4s ease both;
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--color-primary-light);
+}
+
+.stat-card .stat-icon {
+    font-size: 1.75rem;
+    margin-bottom: var(--space-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--radius-lg);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1);
+}
+
+.stat-card .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    margin-bottom: var(--space-1);
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-card .stat-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ============================================
+   STAT ICON VARIANTS
+   ============================================ */
+.stat-card .stat-icon-users {
+    background: #EFF6FF;
+    color: #2563EB;
+}
+
+.stat-card .stat-icon-tasks {
+    background: #ECFDF5;
+    color: #10B981;
+}
+
+.stat-card .stat-icon-exams {
+    background: #F5F3FF;
+    color: #7C3AED;
+}
+
+.stat-card .stat-icon-activity {
+    background: #FFFBEB;
+    color: #F59E0B;
+}
+
+/* Dark mode stat icons */
+[data-dark="true"] .stat-card .stat-icon-users {
+    background: rgba(37, 99, 235, 0.2);
+    color: #60A5FA;
+}
+
+[data-dark="true"] .stat-card .stat-icon-tasks {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34D399;
+}
+
+[data-dark="true"] .stat-card .stat-icon-exams {
+    background: rgba(139, 92, 246, 0.2);
+    color: #A78BFA;
+}
+
+[data-dark="true"] .stat-card .stat-icon-activity {
+    background: rgba(245, 158, 11, 0.2);
+    color: #FBBF24;
+}
+
+/* ============================================
+   QUICK LINKS CARD
+   ============================================ */
+.quick-links-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+}
+
+.quick-links-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-4) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.quick-links-title i {
+    color: var(--color-primary);
+}
+
+/* ============================================
+   QUICK LINKS GRID
+   ============================================ */
+.quick-links-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.quick-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.quick-link:hover {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+    transform: translateX(3px);
+}
+
+.quick-link-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.quick-link:hover .quick-link-icon {
+    background: var(--color-primary);
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.quick-link-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.quick-link-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.quick-link-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.quick-link-arrow {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.quick-link:hover .quick-link-arrow {
+    color: var(--color-primary);
+    transform: translateX(4px);
+}
+
+/* Dark mode quick links */
+[data-dark="true"] .quick-link {
+    background: var(--color-surface);
+}
+
+[data-dark="true"] .quick-link:hover {
+    background: rgba(138, 174, 252, 0.1);
+}
+
+[data-dark="true"] .quick-link-icon {
+    background: rgba(138, 174, 252, 0.1);
+    color: #60A5FA;
+}
+
+[data-dark="true"] .quick-link:hover .quick-link-icon {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stagger animation delays for stat cards */
+.stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stat-card:nth-child(2) { animation-delay: 0.10s; }
+.stat-card:nth-child(3) { animation-delay: 0.15s; }
+.stat-card:nth-child(4) { animation-delay: 0.20s; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3);
+    }
+
+    .stat-card {
+        padding: var(--space-4) var(--space-3);
+    }
+
+    .stat-card .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.4rem;
+    }
+
+    .stat-card .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.7rem;
+    }
+
+    .quick-links-card {
+        padding: var(--space-4);
+    }
+
+    .quick-link {
+        padding: var(--space-3);
+    }
+
+    .quick-link-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: var(--space-4);
+    }
+
+    .stat-card .stat-number {
+        font-size: 1.75rem;
+    }
+}

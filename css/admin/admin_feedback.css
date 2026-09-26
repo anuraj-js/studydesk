@@ -1,0 +1,303 @@
+/* css/admin/admin_feedback.css */
+/* Feedback page specific styles: status tabs, table polish, modal */
+
+/* ============================================
+   STATUS TABS
+   ============================================ */
+.status-tabs {
+    display: flex;
+    gap: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    margin-bottom: var(--space-4);
+    background: var(--color-surface);
+}
+
+.status-tab {
+    flex: 1;
+    padding: 0.65rem 1rem;
+    font-family: var(--font-family);
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: none;
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-right: 1px solid var(--color-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.status-tab:last-child {
+    border-right: none;
+}
+
+.status-tab:hover:not(.active) {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.status-tab.active {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.status-tab .tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 20px;
+    padding: 0 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 20px;
+    background: var(--color-border);
+    color: var(--color-text-muted);
+    transition: all 0.2s ease;
+}
+
+.status-tab.active .tab-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+/* Unread tab special accent */
+.status-tab.status-tab-unread:not(.active) .tab-count {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.status-tab.status-tab-unread:hover:not(.active) .tab-count {
+    background: #FECACA;
+}
+
+[data-dark="true"] .status-tab.status-tab-unread:not(.active) .tab-count {
+    background: rgba(239, 68, 68, 0.25);
+    color: #F87171;
+}
+
+/* ============================================
+   FEEDBACK TABLE - COLUMN POLISH
+   ============================================ */
+
+/* Row number column */
+.admin-table td:first-child {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* User column */
+.admin-table td:nth-child(2) {
+    white-space: nowrap;
+}
+
+/* Type column */
+.admin-table td:nth-child(3) {
+    white-space: nowrap;
+}
+
+/* Subject column */
+.admin-table .subject-cell {
+    color: var(--color-text-primary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    word-break: break-word;
+}
+
+/* Status column */
+.admin-table td:nth-child(5) {
+    white-space: nowrap;
+}
+
+/* Date column */
+.admin-table td:nth-child(6) {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* Actions column */
+.admin-table td:nth-child(7) {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Smooth row hover with left-border indicator */
+.admin-table tbody tr {
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-table tbody tr:hover {
+    box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+/* ============================================
+   FEEDBACK MODAL POLISH
+   ============================================ */
+
+/* Modal header polish */
+#feedbackModal .modal-header {
+    margin-bottom: var(--space-4);
+}
+
+/* Message body scroll polish */
+#feedbackModal .modal-message-body {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: var(--space-3);
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    max-height: 240px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--color-text-primary);
+}
+
+/* Custom scrollbar for message */
+#feedbackModal .modal-message-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#feedbackModal .modal-message-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#feedbackModal .modal-message-body::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+}
+
+#feedbackModal .modal-message-body::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+}
+
+/* Status select */
+#modalStatusSelect {
+    font-weight: 500;
+}
+
+/* Type badge in modal */
+#modalType .type-badge {
+    font-size: 0.75rem;
+}
+
+/* ============================================
+   EMPTY STATE POLISH
+   ============================================ */
+.admin-table .empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.4;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    /* Status tabs - horizontal scroll on tablet */
+    .status-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .status-tab {
+        padding: 0.55rem 0.75rem;
+        font-size: 0.78rem;
+    }
+
+    /* Table min-width for tablet */
+    .admin-table {
+        min-width: 650px;
+    }
+
+    /* Tighter padding */
+    .admin-table th,
+    .admin-table td {
+        padding: 0.6rem 0.7rem;
+        font-size: 0.82rem;
+    }
+
+    /* Filters full-width */
+    .admin-filters .filter-group {
+        width: 100%;
+    }
+
+    .admin-filters .filter-group select {
+        flex: 1;
+    }
+
+    /* Modal adjustments */
+    .modal-meta-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+    }
+}
+
+@media (max-width: 480px) {
+    /* Status tabs - hide labels, keep counts */
+    .status-tab {
+        padding: 0.5rem 0.5rem;
+        font-size: 0.72rem;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .status-tab .tab-count {
+        min-width: 18px;
+        height: 16px;
+        font-size: 0.62rem;
+        padding: 0 0.3rem;
+    }
+
+    /* Table - hide # and Date columns on very small screens */
+    .admin-table th:first-child,
+    .admin-table td:first-child {
+        display: none;
+    }
+
+    .admin-table th:nth-child(6),
+    .admin-table td:nth-child(6) {
+        display: none;
+    }
+
+    .admin-table {
+        min-width: 400px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.5rem 0.55rem;
+        font-size: 0.75rem;
+    }
+
+    .admin-table .subject-cell {
+        font-size: 0.78rem;
+    }
+
+    .admin-table .type-badge,
+    .admin-table .status-badge {
+        font-size: 0.62rem;
+        padding: 0.15rem 0.45rem;
+    }
+
+    /* Action buttons - smaller */
+    .admin-table .btn-icon {
+        padding: 0.3rem 0.45rem;
+        font-size: 0.72rem;
+    }
+
+    /* Modal */
+    #feedbackModal .modal-message-body {
+        font-size: 0.85rem;
+        max-height: 200px;
+    }
+}

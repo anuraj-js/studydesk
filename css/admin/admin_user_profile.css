@@ -1,0 +1,358 @@
+/* css/admin/admin_user_profile.css */
+/* User profile page specific styles: header, cards, summary grid, loading */
+
+/* ============================================
+   PROFILE PAGE HEADER
+   ============================================ */
+.profile-page-header {
+    margin-bottom: var(--space-5);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    margin-bottom: var(--space-4);
+}
+
+.back-link:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+}
+
+.back-link i {
+    font-size: 0.8rem;
+}
+
+[data-dark="true"] .back-link:hover {
+    background: rgba(138, 174, 252, 0.1);
+}
+
+/* ============================================
+   PROFILE TITLE BLOCK
+   ============================================ */
+.profile-title-block {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+[data-dark="true"] .profile-avatar {
+    background: rgba(138, 174, 252, 0.15);
+    color: #60A5FA;
+}
+
+.profile-username {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 0.4rem 0;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+/* ============================================
+   PROFILE CARD
+   ============================================ */
+.profile-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    margin-top: var(--space-4);
+    box-shadow: var(--shadow-sm);
+    animation: fadeInUp 0.4s ease both;
+}
+
+.profile-card:nth-child(2) { animation-delay: 0.05s; }
+.profile-card:nth-child(3) { animation-delay: 0.10s; }
+.profile-card:nth-child(4) { animation-delay: 0.15s; }
+
+.profile-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-4) 0;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.profile-card-title i {
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+/* ============================================
+   PROFILE GRID (label/value pairs)
+   ============================================ */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3) var(--space-6);
+}
+
+.profile-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.3rem 0;
+}
+
+.profile-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.profile-value {
+    font-size: 0.95rem;
+    color: var(--color-text-primary);
+    font-weight: 500;
+    word-break: break-word;
+}
+
+/* ============================================
+   SUMMARY GRID (activity stats)
+   ============================================ */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.summary-stat {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.summary-stat:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+    border-color: var(--color-primary-light);
+}
+
+.summary-icon {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-1);
+}
+
+.summary-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.summary-label {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin-top: 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+[data-dark="true"] .summary-stat {
+    background: var(--color-surface);
+}
+
+/* ============================================
+   TEXT UTILITIES
+   ============================================ */
+.text-muted {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+.text-success {
+    color: var(--color-success);
+}
+
+.text-success i {
+    margin-right: 0.2rem;
+}
+
+/* ============================================
+   LOADING SKELETON
+   ============================================ */
+.profile-loading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.skeleton {
+    background: var(--color-border);
+    border-radius: var(--radius-md);
+    animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-title {
+    height: 28px;
+    width: 40%;
+}
+
+.skeleton-card {
+    height: 180px;
+    width: 100%;
+    border-radius: var(--radius-lg);
+}
+
+@keyframes skeletonPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   ERROR STATE OVERRIDE
+   ============================================ */
+#userProfileContainer .error-state {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8) var(--space-4);
+    margin-top: var(--space-4);
+}
+
+#userProfileContainer .error-state .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+#userProfileContainer .error-state .btn-secondary:hover {
+    background: var(--color-background);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-title-block {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--space-3);
+    }
+
+    .profile-avatar {
+        width: 64px;
+        height: 64px;
+        font-size: 2rem;
+    }
+
+    .profile-username {
+        font-size: 1.25rem;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+    }
+
+    .profile-card {
+        padding: var(--space-4);
+    }
+
+    .profile-card-title {
+        font-size: 0.95rem;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summary-number {
+        font-size: 1.25rem;
+    }
+
+    .summary-icon {
+        font-size: 1.1rem;
+    }
+
+    .summary-label {
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .profile-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 1.75rem;
+    }
+
+    .profile-username {
+        font-size: 1.1rem;
+    }
+}
