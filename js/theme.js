@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return window.location.pathname.includes('/admin/') ? '../../' : '../';
     }
 
+    // Detect if current page is an admin page
+    function isAdminPage() {
+        return window.location.pathname.includes('/admin/');
+    }
+
     // Store original button HTML for restoration
     themeBtns.forEach(btn => {
         btn.dataset.originalHtml = btn.innerHTML;
@@ -53,11 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLogo(theme);
     }
 
-    // Update logo based on theme
+    // Update logo based on theme and page type (user vs admin)
     function updateLogo(theme) {
         const logoImg = document.querySelector('.logo-img');
         if (logoImg) {
-            logoImg.src = getBasePath() + `images/studydesk_logo_${theme}.svg`;
+            const logoPath = isAdminPage()
+                ? `images/admin/studydesk_admin_logo_${theme}.svg`
+                : `images/studydesk_logo_${theme}.svg`;
+            logoImg.src = getBasePath() + logoPath;
         }
     }
 
