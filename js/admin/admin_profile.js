@@ -133,8 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const current = {
             username: profileUsername.value.trim(),
             email: profileEmail.value.trim(),
-            phone: profilePhone.value.trim() || null,
-            address: profileAddress.value.trim() || null,
+            phone: profilePhone.value.trim() || '',
+            address: profileAddress.value.trim() || '',
             academicLevel: profileAcademicLevel.value,
             gender: profileGender.value,
             dob: profileDob.value
@@ -163,8 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const username = profileUsername.value.trim();
             const email = profileEmail.value.trim();
-            const phone = profilePhone.value.trim() || null;
-            const address = profileAddress.value.trim() || null;
+            const phone = profilePhone.value.trim() || '';
+            const address = profileAddress.value.trim() || '';
             const academicLevel = profileAcademicLevel.value;
             const gender = profileGender.value;
             const dob = profileDob.value;
