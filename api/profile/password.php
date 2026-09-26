@@ -30,19 +30,8 @@ if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
     exit();
 }
 
-// Verify current password
-$sql = "SELECT password FROM users WHERE id = :id";
-$stmt = $pdo->prepare($sql);
-$stmt->execute(["id" => $userId]);
-$user = $stmt->fetch();
-
-if (!$user || !password_verify($currentPassword, $user["password"])) {
-    echo json_encode(["success" => false, "message" => "Current password is incorrect", "data" => null]);
-    exit();
-}
-
-// Validate new password (null-safe)
-if (empty($newPassword) || strlen($newPassword) < 6) {
+// Validate new password
+if (strlen($newPassword) < 6) {
     echo json_encode(["success" => false, "message" => "Password must be at least 6 characters", "data" => null]);
     exit();
 }
@@ -52,16 +41,37 @@ if ($newPassword !== $confirmPassword) {
     exit();
 }
 
-// Hash and update
-$hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-$sql = "UPDATE users SET password = :password WHERE id = :id";
-$stmt = $pdo->prepare($sql);
-$stmt->execute(["password" => $hashedPassword, "id" => $userId]);
+try {
+    // Verify current password
+    $sql = "SELECT password FROM users WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(["id" => $userId]);
+    $user = $stmt->fetch();
 
-echo json_encode([
-    "success" => true,
-    "message" => "Password changed successfully",
-    "data" => null
-]);
-exit();
+    if (!$user || !password_verify($currentPassword, $user["password"])) {
+        echo json_encode(["success" => false, "message" => "Current password is incorrect", "data" => null]);
+        exit();
+    }
+
+    // Hash and update
+    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+    $sql = "UPDATE users SET password = :password WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(["password" => $hashedPassword, "id" => $userId]);
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Password changed successfully",
+        "data" => null
+    ]);
+    exit();
+
+} catch (PDOException $e) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Something went wrong. Please try again.",
+        "data" => null
+    ]);
+    exit();
+}
 ?>

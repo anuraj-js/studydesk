@@ -146,12 +146,12 @@ if ($method === "PUT") {
         $stmt->execute(["id" => $userId]);
         $user = $stmt->fetch();
 
-        // Update session
+        // Update session with trimmed values
         if (isset($data["username"])) {
-            $_SESSION["username"] = $data["username"];
+            $_SESSION["username"] = $username;
         }
         if (isset($data["email"])) {
-            $_SESSION["email"] = $data["email"];
+            $_SESSION["email"] = $email;
         }
 
         echo json_encode([
