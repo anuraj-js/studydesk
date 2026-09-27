@@ -71,7 +71,7 @@ try {
     // Add random delay to match the "email not found" scenario
     usleep(rand(500000, 2500000));
 
-    if ($emailSent) {
+    if ($emailSent["success"]) {
         echo json_encode([
             "success" => true,
             "message" => "If an account is registered with this email address, a password reset link has been sent.",
