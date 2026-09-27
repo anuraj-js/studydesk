@@ -35,24 +35,19 @@ try {
         exit();
     }
 
-    // Count remaining topics from topics table (single query)
-    $sql = "SELECT COUNT(*) as remaining FROM topics WHERE exam_id = :exam_id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(["exam_id" => $examId]);
-    $result = $stmt->fetch();
-    $remainingTopics = (int)$result["remaining"];
-
-    // If no topics exist, exam has no topics to complete
-    if ($remainingTopics == 0) {
+    // Verify exam has at least 1 topic total
+    if ($exam["total_topics"] == 0) {
         echo json_encode(["success" => false, "message" => "Exam has no topics to complete", "data" => null]);
         exit();
     }
 
-    // If topics exist, they are all incomplete (topics are deleted when completed)
-    // So any remaining topics means the exam is not fully completed
-    // No need for a second COUNT query
+    // Verify all topics are completed
+    if ($exam["completed_topics"] < $exam["total_topics"]) {
+        echo json_encode(["success" => false, "message" => "All topics must be completed first", "data" => null]);
+        exit();
+    }
 
-    // Get topic titles for activity history
+    // Fetch topic titles for activity history (may be empty if all topics completed)
     $sql = "SELECT title FROM topics WHERE exam_id = :exam_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(["exam_id" => $examId]);
@@ -70,7 +65,7 @@ try {
 
     $pdo->beginTransaction();
 
-    // Delete all topics
+    // Delete any remaining topics (should be none, but safe to clean up)
     $sql = "DELETE FROM topics WHERE exam_id = :exam_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(["exam_id" => $examId]);
@@ -83,6 +78,7 @@ try {
         "item_name" => $exam["exam_name"],
         "details" => json_encode([
             "exam_date" => $exam["exam_date"],
+            "total_topics" => (int)$exam["total_topics"],
             "topics" => $topics,
             "prep_duration_days" => $prepDuration,
             "days_remaining" => $daysRemaining
@@ -104,7 +100,9 @@ try {
     exit();
 
 } catch (PDOException $e) {
-    $pdo->rollBack();
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     echo json_encode(["success" => false, "message" => "Something went wrong. Please try again.", "data" => null]);
     exit();
 }
