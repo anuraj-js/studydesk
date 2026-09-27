@@ -181,10 +181,11 @@ if ($method === "DELETE") {
         $stmt = $pdo->prepare($sql);
         $stmt->execute(["id" => $topicId]);
 
-        // Update counters with GREATEST to prevent negative values
+        // Only decrement total_topics - completed_topics stays unchanged because
+        // any topic still in the topics table is by definition incomplete.
+        // (Completed topics are deleted from the topics table when marked complete.)
         $sql = "UPDATE exams SET 
-            total_topics = GREATEST(total_topics - 1, 0),
-            completed_topics = GREATEST(completed_topics - 1, 0)
+            total_topics = GREATEST(total_topics - 1, 0)
         WHERE id = :exam_id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(["exam_id" => $examId]);
