@@ -57,7 +57,7 @@ $selectedUserId = isset($_GET["user_id"]) ? (int)$_GET["user_id"] : 0;
             <div class="admin-search">
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search activities by item name or type...">
+                    <input type="text" id="searchInput" placeholder="Search activities...">
                     <button id="clearSearchBtn" class="clear-search" style="display:none;" aria-label="Clear search">
                         <i class="fas fa-times-circle"></i>
                     </button>

@@ -49,7 +49,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
             <div class="admin-search">
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search users by username or email...">
+                    <input type="text" id="searchInput" placeholder="Search users...">
                     <button id="clearSearchBtn" class="clear-search" style="display:none;" aria-label="Clear search">
                         <i class="fas fa-times-circle"></i>
                     </button>
