@@ -86,7 +86,7 @@
    FEEDBACK TABLE - COLUMN POLISH
    ============================================ */
 
-/* Row number column */
+/* ID column */
 .admin-table td:first-child {
     color: var(--color-text-muted);
     font-size: 0.8rem;
@@ -214,9 +214,9 @@
         font-size: 0.78rem;
     }
 
-    /* Table min-width for tablet */
+    /* Ensure table is wide enough to trigger horizontal scroll */
     .admin-table {
-        min-width: 650px;
+        min-width: 800px;
     }
 
     /* Tighter padding */
@@ -243,7 +243,7 @@
 }
 
 @media (max-width: 480px) {
-    /* Status tabs - hide labels, keep counts */
+    /* Status tabs - tighter spacing */
     .status-tab {
         padding: 0.5rem 0.5rem;
         font-size: 0.72rem;
@@ -258,19 +258,9 @@
         padding: 0 0.3rem;
     }
 
-    /* Table - hide # and Date columns on very small screens */
-    .admin-table th:first-child,
-    .admin-table td:first-child {
-        display: none;
-    }
-
-    .admin-table th:nth-child(6),
-    .admin-table td:nth-child(6) {
-        display: none;
-    }
-
+    /* Ensure table keeps horizontal scroll */
     .admin-table {
-        min-width: 400px;
+        min-width: 800px;
     }
 
     .admin-table th,

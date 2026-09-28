@@ -5,7 +5,7 @@
    USERS TABLE - SPECIFIC POLISH
    ============================================ */
 
-/* Row number column - muted */
+/* ID column - muted */
 .admin-table td:first-child {
     color: var(--color-text-muted);
     font-size: 0.8rem;
@@ -124,14 +124,9 @@
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
-    /* Hide low-priority columns on tablet */
-    .admin-table td:first-child,
-    .admin-table th:first-child {
-        display: none;
-    }
-
+    /* Ensure table is wide enough to trigger horizontal scroll */
     .admin-table {
-        min-width: 500px;
+        min-width: 700px;
     }
 }
 

@@ -55,6 +55,7 @@
 /* Actions column - centered */
 .admin-table td:nth-child(5) {
     text-align: center;
+    white-space: nowrap;
 }
 
 /* Smooth row hover with subtle left-border indicator */
@@ -93,9 +94,9 @@
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
-    /* Reduce table min-width for tablet */
+    /* Ensure table is wide enough to trigger horizontal scroll */
     .admin-table {
-        min-width: 550px;
+        min-width: 700px;
     }
 
     /* Smaller paddings */
@@ -127,15 +128,9 @@
 }
 
 @media (max-width: 480px) {
-    /* Hide the "Actions" column on very small screens */
-    .admin-table th:nth-child(5),
-    .admin-table td:nth-child(5) {
-        display: none;
-    }
-
-    /* Reduce table min-width further */
+    /* Ensure table keeps horizontal scroll */
     .admin-table {
-        min-width: 420px;
+        min-width: 700px;
     }
 
     /* Smaller fonts */
