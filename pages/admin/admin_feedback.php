@@ -82,7 +82,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th style="width: 60px;">#</th>
+                            <th style="width: 60px;">ID</th>
                             <th style="width: 130px;">User</th>
                             <th style="width: 150px;">Type</th>
                             <th>Subject</th>
