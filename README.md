@@ -23,15 +23,18 @@ Built as a 4th-semester BCA project under Tribhuvan University (TU). I noticed s
 
 ### Admin
 - Dashboard — site-wide stats (users, tasks, exams, activity)
-- User management — view all users, view full profiles, delete accounts
-- User activity — read-only view into any user's tasks/exams/notes/activity
-- Feedback management — view, mark read/resolved, delete submissions
+- User management — search/view all users, view full profiles with usage stats, delete accounts
+- Activity log — read-only log of all user activity (completed tasks, exams, pomodoro sessions)
+- Feedback management — view, filter, mark read/resolved, delete submissions
+- Profile & password — manage the admin's own account
+- Themes — same 3 colors and dark mode as the user side
+- Help & Support
 
 ## Tech Stack
 
 - **Backend:** PHP (vanilla, PDO with prepared statements)
 - **Database:** MySQL
-- **Frontend:** Vanilla JavaScript, CSS
+- **Frontend:** Vanilla JavaScript, CSS, HTML
 - **Email:** PHPMailer (SMTP)
 
 No frontend/backend framework — a deliberate choice to keep the stack simple and dependency-light.
@@ -39,21 +42,21 @@ No frontend/backend framework — a deliberate choice to keep the stack simple a
 ## Setup
 
 1. **Clone the repo**
-   
+   ```
    git clone https://github.com/anuraj-js/studydesk.git
    cd studydesk
-   
+   ```
 
 2. **Create the database**
-   
+   ```
    mysql -u root -p -e "CREATE DATABASE studydesk_db"
    mysql -u root -p studydesk_db < schema.sql
-   
+   ```
 
 3. **Configure environment**
-   
+   ```
    cp .env.example .env
-   
+   ```
    Fill in your DB credentials and SMTP details in `.env` (see comments in the file for Gmail App Password setup).
 
 4. **Run locally**
@@ -63,14 +66,15 @@ No frontend/backend framework — a deliberate choice to keep the stack simple a
 5. **Create an admin account**
 
    Generate a bcrypt password hash:
-   
+   ```
    php -r "echo password_hash('your_password', PASSWORD_DEFAULT);"
-   
+   ```
 
    Then insert the admin account directly:
-   
+   ```sql
    INSERT INTO users (username, email, password, role, academic_level, dob, gender)
    VALUES ('admin', 'admin@example.com', 'PASTE_HASH_HERE', 'admin', 'bachelor', '2000-01-01', 'male');
+   ```
 
 ## License
 
