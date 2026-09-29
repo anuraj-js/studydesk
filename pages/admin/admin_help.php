@@ -228,7 +228,8 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
                             <li><strong>Dark Mode</strong> — Toggle dark mode for comfortable viewing at night</li>
                             <li><strong>Access</strong> — Located in the sidebar under "Appearance"</li>
                             <li><strong>Auto-Save</strong> — Theme preferences are saved to your account automatically</li>
-                            <li><strong>Logo Updates</strong> — Admin logo changes with your theme</li>
+                            <li><strong>Logo Updates</strong> — The logo changes with your theme</li>
+                            <li><strong>Persistent</strong> — Your theme choice persists across sessions and devices</li>
                         </ul>
                         <div class="help-shortcuts">
                             <span class="shortcut-label">Keyboard Shortcuts:</span>
