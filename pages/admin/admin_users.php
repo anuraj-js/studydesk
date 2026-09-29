@@ -117,26 +117,50 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
     <!-- Delete Confirmation Modal -->
     <div class="modal-overlay-custom" id="deleteModal">
         <div class="modal-box">
-            <div class="modal-icon">
-                <i class="fas fa-exclamation-triangle" style="color: var(--color-error);"></i>
+
+            <!-- State 1: Confirm Deletion -->
+            <div id="modalDeleteState">
+                <div class="modal-icon">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--color-error);"></i>
+                </div>
+                <div class="modal-title" id="deleteModalTitle">Delete User</div>
+                <div class="modal-message" id="deleteModalMessage">
+                    This will permanently delete <strong id="deleteTargetName">user</strong> and all their data:
+                    <br>
+                    <small id="deleteModalDataList">Tasks, Exams, Topics, Quick Notes, Activity History, Feedback</small>
+                </div>
+                <div class="modal-input-group" id="deleteInputGroup">
+                    <label for="deleteConfirmInput">Type the username to confirm:</label>
+                    <input type="text" id="deleteConfirmInput" placeholder="Type username here..." autocomplete="off">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" id="deleteCancelBtn">Cancel</button>
+                    <button class="btn btn-danger" id="deleteConfirmBtn" disabled>Delete User</button>
+                </div>
             </div>
-            <div class="modal-title">Delete User</div>
-            <div class="modal-message">
-                This will permanently delete <strong id="deleteTargetName">user</strong> and all their data:
-                <br>
-                <small>Tasks, Exams, Topics, Quick Notes, Activity History, Feedback</small>
+
+            <!-- State 2: Cannot Delete Self -->
+            <div id="modalBlockedState" style="display: none;">
+                <div class="modal-icon">
+                    <i class="fas fa-shield-alt" style="color: var(--color-warning);"></i>
+                </div>
+                <div class="modal-title">Cannot Delete Your Own Account</div>
+                <div class="modal-message">
+                    You cannot delete your own admin account.
+                    <br><br>
+                    If you need to remove your account, ask another admin to do it.
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="deleteCloseBtn">Close</button>
+                </div>
             </div>
-            <div class="modal-input-group">
-                <label for="deleteConfirmInput">Type the username to confirm:</label>
-                <input type="text" id="deleteConfirmInput" placeholder="Type username here..." autocomplete="off">
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" id="deleteCancelBtn">Cancel</button>
-                <button class="btn btn-danger" id="deleteConfirmBtn" disabled>Delete User</button>
-            </div>
+
         </div>
     </div>
 
+    <script>
+        window.CURRENT_USER_ID = <?php echo (int)$_SESSION['user_id']; ?>;
+    </script>
     <script src="../../js/notification.js"></script>
     <script src="../../js/sidebar.js"></script>
     <script src="../../js/admin/admin_users.js"></script>

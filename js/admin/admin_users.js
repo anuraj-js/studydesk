@@ -15,6 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
     const deleteCancelBtn = document.getElementById('deleteCancelBtn');
 
+    // Delete modal - two states
+    const modalDeleteState = document.getElementById('modalDeleteState');
+    const modalBlockedState = document.getElementById('modalBlockedState');
+    const deleteModalTitle = document.getElementById('deleteModalTitle');
+    const deleteModalDataList = document.getElementById('deleteModalDataList');
+    const deleteInputGroup = document.getElementById('deleteInputGroup');
+    const deleteCloseBtn = document.getElementById('deleteCloseBtn');
+
+    // Current logged-in admin's ID (injected by PHP)
+    const currentUserId = parseInt(window.CURRENT_USER_ID) || 0;
+
     let searchQuery = '';
     let currentRole = 'all';
     let currentLevel = 'all';
@@ -81,14 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="btn-icon view-btn" data-id="${user.id}" title="View Profile">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn-icon delete-btn" data-id="${user.id}" data-username="${escapeHtml(user.username)}" title="Delete User">
+                    <button class="btn-icon delete-btn"
+                            data-id="${user.id}"
+                            data-username="${escapeHtml(user.username)}"
+                            data-role="${user.role}"
+                            title="Delete User">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
             </tr>
         `).join('');
 
-        // Attach event listeners
+        // Attach view listeners
         usersTableBody.querySelectorAll('.view-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const userId = this.dataset.id;
@@ -96,11 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        // Attach delete listeners
         usersTableBody.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const userId = parseInt(this.dataset.id);
                 const username = this.dataset.username;
-                openDeleteModal(userId, username);
+                const role = this.dataset.role;
+                openDeleteModal(userId, username, role);
             });
         });
     }
@@ -200,10 +217,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Delete modal
-    function openDeleteModal(userId, username) {
+    // --- Delete Modal ---
+
+    function openDeleteModal(userId, username, role) {
         pendingDeleteId = userId;
         pendingDeleteUsername = username;
+
+        // Case 1: Attempting to delete self -> show blocked state
+        if (userId === currentUserId) {
+            if (modalDeleteState) modalDeleteState.style.display = 'none';
+            if (modalBlockedState) modalBlockedState.style.display = 'block';
+            if (deleteModal) deleteModal.classList.add('open');
+            return;
+        }
+
+        // Case 2 & 3: Show confirm state (dynamic based on role)
+        if (modalDeleteState) modalDeleteState.style.display = 'block';
+        if (modalBlockedState) modalBlockedState.style.display = 'none';
+
+        const isAdmin = role === 'admin';
+
+        if (isAdmin) {
+            // Case 2: Deleting another admin
+            if (deleteModalTitle) deleteModalTitle.textContent = 'Delete Admin';
+            if (deleteModalDataList) {
+                deleteModalDataList.innerHTML = 'This will remove their access to the admin panel and delete their account.';
+            }
+            if (deleteConfirmBtn) deleteConfirmBtn.textContent = 'Delete Admin';
+        } else {
+            // Case 3: Deleting regular user
+            if (deleteModalTitle) deleteModalTitle.textContent = 'Delete User';
+            if (deleteModalDataList) {
+                deleteModalDataList.innerHTML = 'Tasks, Exams, Topics, Quick Notes, Activity History, Feedback';
+            }
+            if (deleteConfirmBtn) deleteConfirmBtn.textContent = 'Delete User';
+        }
 
         if (deleteTargetName) deleteTargetName.textContent = username;
         if (deleteConfirmInput) deleteConfirmInput.value = '';
@@ -303,6 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Delete modal - cancel
     if (deleteCancelBtn) {
         deleteCancelBtn.addEventListener('click', closeDeleteModal);
+    }
+
+    // Delete modal - close (blocked state)
+    if (deleteCloseBtn) {
+        deleteCloseBtn.addEventListener('click', closeDeleteModal);
     }
 
     // Delete modal - click overlay to close
