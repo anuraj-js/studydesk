@@ -2,15 +2,18 @@
 -- MySQL 8.0+
 --
 -- Setup:
---   1. Create a database: CREATE DATABASE studydesk_db;
---   2. Import this file: mysql -u root -p studydesk_db < schema.sql
---   3. Create your own admin account via the register flow, then manually
---      set its role to 'admin':  UPDATE users SET role='admin' WHERE id=1;
+--   1. Create a database:
+--      CREATE DATABASE studydesk_db;
+--   2. Import this file:
+--      mysql -u root -p studydesk_db < schema.sql
+--   3. Create an admin account:
+--      a. Generate a bcrypt password hash:
+--         php -r "echo password_hash('your_password', PASSWORD_DEFAULT);"
+--      b. Insert the admin user (replace PASTE_HASH_HERE with the generated hash):
+--         INSERT INTO users (username, email, password, role, academic_level, dob, gender)
+--         VALUES ('admin', 'admin@example.com', 'PASTE_HASH_HERE', 'admin', 'bachelor', '2000-01-01', 'male');
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
 SET NAMES utf8mb4;
 
 -- --------------------------------------------------------
@@ -149,5 +152,3 @@ CREATE TABLE `password_resets` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `password_resets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-COMMIT;
