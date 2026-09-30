@@ -65,7 +65,7 @@ cd studydesk
 
 ```bash
 mysql -u root -p -e "CREATE DATABASE studydesk_db"
-mysql -u root -p studydesk_db < schema.sql
+mysql -u root -p studydesk_db < database/schema.sql
 ```
 
 ### 3. Configure environment
@@ -120,23 +120,26 @@ Replace `YOUR_HASH_HERE` with the generated hash. Username and email must be uni
 
 ```
 studydesk/
-├── api/              # Backend API endpoints (PHP)
-│   ├── admin/        # Admin-only endpoints
-│   ├── auth/         # Login, register, forgot/reset password
-│   ├── tasks/        # Task CRUD
-│   ├── exams/        # Exam and topic management
-│   └── ...
-├── config/           # DB connection, gatekeepers, theme, mail, env
-├── css/              # Stylesheets (user + admin)
-├── forms/            # Auth pages (login, register, forgot, reset)
-├── images/           # Logos and theme variants
-├── js/               # Frontend scripts (user + admin)
-├── pages/            # Protected pages
-│   ├── admin/        # Admin panel
-│   └── includes/     # Shared header, sidebar
-├── phpmailer/        # Email library
-├── index.php         # Entry point (role-based routing)
-└── schema.sql         # Database schema
+├── api/ # Backend API endpoints (PHP)
+│ ├── admin/ # Admin-only endpoints
+│ ├── auth/ # Login, register, forgot/reset password
+│ ├── tasks/ # Task CRUD
+│ ├── exams/ # Exam and topic management
+│ └── ...
+├── audio/ # Sound files (Pomodoro alert)
+├── config/ # DB connection, gatekeepers, theme, mail, env
+├── css/ # Stylesheets (user + admin)
+├── database/ # Database schema
+│ └── schema.sql # Full schema (tables, keys, indexes)
+├── forms/ # Auth pages (login, register, forgot, reset)
+├── images/ # Logos and theme variants
+├── js/ # Frontend scripts (user + admin)
+├── pages/ # Protected pages
+│ ├── admin/ # Admin panel
+│ └── includes/ # Shared header, sidebar
+├── phpmailer/ # Email library
+├── index.php # Entry point (role-based routing)
+└── README.md
 ```
 
 ---
