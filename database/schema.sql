@@ -5,7 +5,7 @@
 --   1. Create a database:
 --      CREATE DATABASE studydesk_db;
 --   2. Import this file:
---      mysql -u root -p studydesk_db < schema.sql
+--      mysql -u root -p studydesk_db < database/schema.sql
 --   3. Create an admin account:
 --      a. Generate a bcrypt password hash:
 --         php -r "echo password_hash('your_password', PASSWORD_DEFAULT);"
