@@ -6,18 +6,20 @@
 --      CREATE DATABASE studydesk_db;
 --   2. Import this file:
 --      mysql -u root -p studydesk_db < database/schema.sql
---   3. Create an admin account:
+--   3. Create an admin account directly in the database:
 --      a. Generate a bcrypt password hash:
 --         php -r "echo password_hash('your_password', PASSWORD_DEFAULT);"
---      b. Insert the admin user (replace PASTE_HASH_HERE with the generated hash):
---         INSERT INTO users (username, email, password, role, academic_level, dob, gender)
---         VALUES ('admin', 'admin@example.com', 'PASTE_HASH_HERE', 'admin', 'bachelor', '2000-01-01', 'male');
+--      b. Insert the admin (replace PASTE_HASH_HERE with the generated hash):
+--         INSERT INTO admins (username, email, password)
+--         VALUES ('admin', 'admin@example.com', 'PASTE_HASH_HERE');
+--
+-- Note: Admin accounts are created manually — there is no public admin registration.
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET NAMES utf8mb4;
 
 -- --------------------------------------------------------
--- Table: users
+-- Table: users (students only)
 -- --------------------------------------------------------
 
 CREATE TABLE `users` (
@@ -25,7 +27,6 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('user','admin') DEFAULT 'user',
   `academic_level` enum('school','plus_two','bachelor','master','others') NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `address` text,
@@ -35,6 +36,21 @@ CREATE TABLE `users` (
   `theme` enum('blue','purple','red') DEFAULT 'blue',
   `dark_mode` tinyint(1) DEFAULT '0',
   `timezone` varchar(100) NOT NULL DEFAULT 'Asia/Kathmandu',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Table: admins
+-- --------------------------------------------------------
+
+CREATE TABLE `admins` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
@@ -55,6 +71,7 @@ CREATE TABLE `tasks` (
   `priority` enum('low','medium','high') DEFAULT 'medium',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
+  KEY `idx_user_due` (`user_id`,`due_date`),
   CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -117,6 +134,7 @@ CREATE TABLE `activity_history` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
+  KEY `idx_user_created` (`user_id`,`created_at`),
   CONSTRAINT `activity_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -140,15 +158,31 @@ CREATE TABLE `feedback` (
 
 -- --------------------------------------------------------
 -- Table: password_resets
+-- Note: No foreign key constraint — user_id references either users or admins
+--       depending on the role column value.
 -- --------------------------------------------------------
 
 CREATE TABLE `password_resets` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
+  `role` enum('user','admin') NOT NULL DEFAULT 'user',
   `token` varchar(255) NOT NULL,
   `expires_at` datetime NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `password_resets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Table: login_attempts
+-- --------------------------------------------------------
+
+CREATE TABLE `login_attempts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(100) NOT NULL,
+  `attempt_type` enum('login','forgot_password') NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `attempted_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_identifier_type` (`identifier`,`attempt_type`,`attempted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
