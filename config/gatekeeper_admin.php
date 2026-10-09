@@ -3,7 +3,7 @@
 
 session_start();
 
-if (empty($_SESSION['user_id'])) {
+if (empty($_SESSION['admin_id'])) {
     header("Location: /studydesk/forms/login.html");
     exit();
 }

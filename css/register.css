@@ -461,6 +461,13 @@ body {
     margin-left: 2px;
 }
 
+/* reCAPTCHA */
+.g-recaptcha {
+    margin-bottom: var(--space-4);
+    display: flex;
+    justify-content: center;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     .auth-card {

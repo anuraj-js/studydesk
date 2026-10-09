@@ -16,6 +16,9 @@
 
     <link rel="stylesheet" href="../css/register.css">
 
+    <!-- reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <!-- Favicon suppressor -->
     <link rel="icon" href="data:,">
 </head>
@@ -44,19 +47,19 @@
             <form class="auth-form" id="register-form" novalidate>
                 <!-- Username -->
                 <div class="input-group">
-                    <input type="text" id="username" placeholder=" " required>
+                    <input type="text" id="username" placeholder=" " required maxlength="50">
                     <label for="username"><i class="fas fa-user"></i> Username</label>
                 </div>
 
                 <!-- Email -->
                 <div class="input-group">
-                    <input type="email" id="email" placeholder=" " required>
+                    <input type="email" id="email" placeholder=" " required maxlength="100">
                     <label for="email"><i class="fas fa-envelope"></i> Email</label>
                 </div>
 
                 <!-- Password -->
                 <div class="input-group">
-                    <input type="password" id="password" placeholder=" " required>
+                    <input type="password" id="password" placeholder=" " required maxlength="72">
                     <label for="password"><i class="fas fa-lock"></i> Password</label>
                     <button type="button" class="toggle-password" data-target="password" aria-label="Toggle password visibility">
                         <i class="fas fa-eye"></i>
@@ -65,7 +68,7 @@
 
                 <!-- Confirm Password -->
                 <div class="input-group">
-                    <input type="password" id="confirm-password" placeholder=" " required>
+                    <input type="password" id="confirm-password" placeholder=" " required maxlength="72">
                     <label for="confirm-password"><i class="fas fa-check-circle"></i> Confirm Password</label>
                     <button type="button" class="toggle-password" data-target="confirm-password" aria-label="Toggle password visibility">
                         <i class="fas fa-eye"></i>
@@ -112,18 +115,21 @@
 
                 <!-- Phone (optional) -->
                 <div class="input-group">
-                    <input type="text" id="phone" placeholder=" ">
+                    <input type="text" id="phone" placeholder=" " maxlength="10">
                     <label for="phone"><i class="fas fa-phone"></i> Phone <span class="optional">(optional)</span></label>
                 </div>
 
                 <!-- Address (optional) -->
                 <div class="input-group">
-                    <input type="text" id="address" placeholder=" ">
+                    <input type="text" id="address" placeholder=" " maxlength="255">
                     <label for="address"><i class="fas fa-home"></i> Address <span class="optional">(optional)</span></label>
                 </div>
 
                 <!-- Error Message -->
                 <div id="error-msg" style="display:none;"></div>
+
+                <!-- reCAPTCHA -->
+                <div class="g-recaptcha" data-sitekey="6LfJV-YtAAAAADnmaN6soxCwJs0j6cL70JoPq-q1"></div>
 
                 <!-- Register Button -->
                 <button type="submit" class="auth-btn" id="registerBtn">
@@ -141,6 +147,7 @@
         </div>
     </div>
 
+    <script src="../js/validator.js"></script>
     <script src="../js/register.js"></script>
 </body>
 </html>

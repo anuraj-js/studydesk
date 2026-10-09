@@ -16,6 +16,9 @@
 
     <link rel="stylesheet" href="../css/login.css">
 
+    <!-- reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <!-- Favicon suppressor -->
     <link rel="icon" href="data:,">
 </head>
@@ -42,9 +45,20 @@
 
             <!-- Form -->
             <form class="auth-form" id="login-form" novalidate>
+
+                <!-- Role -->
+                <div class="select-group">
+                    <select id="role" required>
+                        <option value="" disabled selected>Sign In As</option>
+                        <option value="user">Student</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <label for="role"><i class="fas fa-user-shield"></i> Sign In As</label>
+                </div>
+
                 <!-- Username / Email -->
                 <div class="input-group">
-                    <input type="text" id="identifier" placeholder=" " required>
+                    <input type="text" id="identifier" placeholder=" " required maxlength="50">
                     <label for="identifier">
                         <i class="fas fa-envelope"></i> Username / Email
                     </label>
@@ -52,7 +66,7 @@
 
                 <!-- Password -->
                 <div class="input-group">
-                    <input type="password" id="password" placeholder=" " required>
+                    <input type="password" id="password" placeholder=" " required maxlength="72">
                     <label for="password">
                         <i class="fas fa-lock"></i> Password
                     </label>
@@ -63,6 +77,9 @@
 
                 <!-- Error Message -->
                 <div id="error-msg" style="display:none;"></div>
+
+                <!-- reCAPTCHA -->
+                <div class="g-recaptcha" data-sitekey="6LfJV-YtAAAAADnmaN6soxCwJs0j6cL70JoPq-q1"></div>
 
                 <!-- Login Button -->
                 <button type="submit" class="auth-btn" id="loginBtn">
@@ -83,6 +100,7 @@
         </div>
     </div>
 
+    <script src="../js/validator.js"></script>
     <script src="../js/login.js"></script>
 </body>
 </html>

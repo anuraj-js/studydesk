@@ -5,6 +5,8 @@ session_start();
 header("Content-Type: application/json");
 
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/headers.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode(["success" => false, "message" => "Method not allowed", "data" => null]);
@@ -14,28 +16,30 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $json = file_get_contents("php://input");
 $data = json_decode($json, true);
 
-$token = isset($data["token"]) ? trim($data["token"]) : "";
-$password = isset($data["password"]) ? trim($data["password"]) : "";
+$rawToken = isset($data["token"])    ? trim($data["token"]) : "";
+$password = isset($data["password"]) ? $data["password"]    : "";
 
-if (empty($token)) {
+if (isEmpty($rawToken)) {
     echo json_encode(["success" => false, "message" => "Invalid reset token.", "data" => null]);
     exit();
 }
 
-if (empty($password)) {
+if (isEmpty($password)) {
     echo json_encode(["success" => false, "message" => "Please enter a new password.", "data" => null]);
     exit();
 }
 
-if (strlen($password) < 6) {
-    echo json_encode(["success" => false, "message" => "Password must be at least 6 characters.", "data" => null]);
+if (!isValidPassword($password)) {
+    echo json_encode(["success" => false, "message" => "Password must be at least 8 characters and include letters and numbers.", "data" => null]);
     exit();
 }
 
 try {
-    // Find token
+    // Hash the incoming token before querying
+    $storedToken = hash("sha256", $rawToken);
+
     $stmt = $pdo->prepare("SELECT user_id, expires_at FROM password_resets WHERE token = :token");
-    $stmt->execute(["token" => $token]);
+    $stmt->execute(["token" => $storedToken]);
     $reset = $stmt->fetch();
 
     if (!$reset) {
@@ -43,47 +47,30 @@ try {
         exit();
     }
 
-    // Check if token is expired
-    $now = new DateTime();
+    $now       = new DateTime();
     $expiresAt = new DateTime($reset["expires_at"]);
 
     if ($now > $expiresAt) {
-        // Delete expired token
         $stmt = $pdo->prepare("DELETE FROM password_resets WHERE token = :token");
-        $stmt->execute(["token" => $token]);
+        $stmt->execute(["token" => $storedToken]);
         echo json_encode(["success" => false, "message" => "This reset link has expired. Please request a new one.", "data" => null]);
         exit();
     }
 
-    $userId = $reset["user_id"];
-
-    // Hash new password
+    $userId         = $reset["user_id"];
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Update user's password
     $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
-    $stmt->execute([
-        "password" => $hashedPassword,
-        "id" => $userId
-    ]);
+    $stmt->execute(["password" => $hashedPassword, "id" => $userId]);
 
-    // Delete token after use
     $stmt = $pdo->prepare("DELETE FROM password_resets WHERE token = :token");
-    $stmt->execute(["token" => $token]);
+    $stmt->execute(["token" => $storedToken]);
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Password reset successfully. You can now login with your new password.",
-        "data" => null
-    ]);
+    echo json_encode(["success" => true, "message" => "Password reset successfully. You can now login with your new password.", "data" => null]);
     exit();
 
 } catch (PDOException $e) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Something went wrong. Please try again.",
-        "data" => null
-    ]);
+    echo json_encode(["success" => false, "message" => "Something went wrong. Please try again.", "data" => null]);
     exit();
 }
 ?>

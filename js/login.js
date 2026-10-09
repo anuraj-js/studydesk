@@ -2,6 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
+    const roleSelect = document.getElementById('role');
     const identifier = document.getElementById('identifier');
     const password = document.getElementById('password');
     const togglePassword = document.getElementById('togglePassword');
@@ -50,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showSuccess() {
         loginBtn.disabled = true;
         btnText.innerHTML = '<i class="fas fa-check"></i> Logged in!';
-        btnText.style.display = 'inline'; 
+        btnText.style.display = 'inline';
         btnSpinner.style.display = 'none';
         loginBtn.classList.remove('btn-loading');
         loginBtn.classList.add('btn-success');
@@ -58,26 +59,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
-        // Clear previous errors
         clearError();
 
-        // Get values with null-safe handling
+        const role = roleSelect.value;
         const identifierValue = identifier.value ? identifier.value.trim() : '';
-        const passwordValue = password.value ? password.value.trim() : '';
+        const passwordValue = password.value || '';
 
-        // Frontend validation
-        if (!identifierValue || !passwordValue) {
+        // Validate role
+        if (!role) {
+            showError('Please select whether you are signing in as Student or Admin.');
+            return;
+        }
+
+        // Validate identifier and password
+        if (Validator.isEmpty(identifierValue) || Validator.isEmpty(passwordValue)) {
             showError('Please enter your username/email and password.');
             return;
         }
 
-        if (passwordValue.length < 6) {
-            showError('Password must be at least 6 characters.');
+        // Validate reCAPTCHA
+        if (!grecaptcha.getResponse()) {
+            showError('Please complete the CAPTCHA verification.');
             return;
         }
 
-        // Set loading state
         setLoading(true);
 
         try {
@@ -86,18 +91,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    role: role,
                     identifier: identifierValue,
-                    password: passwordValue
+                    password: passwordValue,
+                    'g-recaptcha-response': grecaptcha.getResponse()
                 })
             });
 
             const result = await response.json();
 
             if (result.success) {
-                // Show success state
                 showSuccess();
-
-                // Redirect after brief delay
                 setTimeout(() => {
                     if (result.data.role === 'admin') {
                         window.location.href = '../pages/admin/admin_dashboard.php';
@@ -106,12 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, 800);
             } else {
-                // Show error from PHP
                 showError(result.message);
+                grecaptcha.reset();
                 setLoading(false);
             }
         } catch (error) {
             showError('Something went wrong. Please try again later.');
+            grecaptcha.reset();
             setLoading(false);
         }
     });

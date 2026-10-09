@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showSuccess() {
         registerBtn.disabled = true;
         btnText.innerHTML = '<i class="fas fa-check"></i> Account Created!';
-        btnText.style.display = 'inline'; 
+        btnText.style.display = 'inline';
         btnSpinner.style.display = 'none';
         registerBtn.classList.remove('btn-loading');
         registerBtn.classList.add('btn-success');
@@ -61,67 +61,97 @@ document.addEventListener('DOMContentLoaded', () => {
 
     registerForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-
-        // Clear previous errors
         clearError();
 
-        // Get values with null-safe handling
-        const username = document.getElementById('username').value ? document.getElementById('username').value.trim() : '';
-        const email = document.getElementById('email').value ? document.getElementById('email').value.trim() : '';
-        const password = document.getElementById('password').value ? document.getElementById('password').value : '';
-        const confirmPassword = document.getElementById('confirm-password').value ? document.getElementById('confirm-password').value : '';
-        const academicLevel = document.getElementById('academic-level').value ? document.getElementById('academic-level').value : '';
-        const dob = document.getElementById('dob').value ? document.getElementById('dob').value : '';
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value || '';
+        const confirmPassword = document.getElementById('confirm-password').value || '';
+        const academicLevel = document.getElementById('academic-level').value;
+        const dob = document.getElementById('dob').value;
         const gender = document.querySelector('.gender:checked');
-        const phone = document.getElementById('phone').value ? document.getElementById('phone').value.trim() : null;
-        const address = document.getElementById('address').value ? document.getElementById('address').value.trim() : null;
+        const phoneRaw = document.getElementById('phone').value.trim();
+        const addressRaw = document.getElementById('address').value.trim();
+        const phone = phoneRaw || null;
+        const address = addressRaw || null;
 
-        // Frontend validation
-        if (!username || !email || !password || !confirmPassword || !academicLevel) {
+        // Required fields
+        if (Validator.isEmpty(username) || Validator.isEmpty(email) || !password || !academicLevel) {
             showError('Please fill in all required fields.');
             return;
         }
 
-        if (username.length < 3) {
-            showError('Username must be at least 3 characters.');
+        // Username: min 3, alphanumeric + underscore only
+        if (!Validator.isAlphanumericUsername(username)) {
+            showError('Username must be at least 3 characters and contain only letters, numbers, or underscores.');
             return;
         }
 
-        if (!email.includes('@') || !email.includes('.')) {
+        // Username max length
+        if (!Validator.isWithinLength(username, 50)) {
+            showError('Username must be 50 characters or less.');
+            return;
+        }
+
+        // Email format
+        if (!Validator.isValidEmail(email)) {
             showError('Please enter a valid email address.');
             return;
         }
 
-        if (password.length < 6) {
-            showError('Password must be at least 6 characters.');
+        // Email max length
+        if (!Validator.isWithinLength(email, 100)) {
+            showError('Email must be 100 characters or less.');
             return;
         }
 
+        // Password: min 8, must have letter and number
+        if (!Validator.isValidPassword(password)) {
+            showError('Password must be at least 8 characters and include letters and numbers.');
+            return;
+        }
+
+        // Confirm password
         if (password !== confirmPassword) {
             showError('Passwords do not match.');
             return;
         }
 
+        // Date of birth
         if (!dob) {
             showError('Please select your date of birth.');
             return;
         }
 
-        // Validate date of birth (at least 13 years old)
-        const dobDate = new Date(dob);
-        const today = new Date();
-        const cutoff = new Date(dobDate.getFullYear() + 13, dobDate.getMonth(), dobDate.getDate());
-        if (today < cutoff) {
+        if (!Validator.isAtLeast13(dob)) {
             showError('You must be at least 13 years old to register.');
             return;
         }
 
+        // Gender
         if (!gender) {
             showError('Please select your gender.');
             return;
         }
 
-        // Set loading state
+        // Phone (optional) — validate only if filled
+        if (phone && !Validator.isValidPhone(phone)) {
+            showError('Phone number must be exactly 10 digits.');
+            return;
+        }
+
+        // Address (optional) — max length
+        if (address && !Validator.isWithinLength(address, 255)) {
+            showError('Address must be 255 characters or less.');
+            return;
+        }
+
+        // reCAPTCHA
+        if (!grecaptcha.getResponse()) {
+            showError('Please complete the CAPTCHA verification.');
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -137,27 +167,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     dob: dob,
                     gender: gender.value,
                     phone: phone,
-                    address: address
+                    address: address,
+                    'g-recaptcha-response': grecaptcha.getResponse()
                 })
             });
 
             const result = await response.json();
 
             if (result.success) {
-                // Show success state
                 showSuccess();
-
-                // Redirect after brief delay
                 setTimeout(() => {
                     window.location.href = '../pages/dashboard.php';
                 }, 800);
             } else {
-                // Show error from PHP
                 showError(result.message);
+                grecaptcha.reset();
                 setLoading(false);
             }
         } catch (error) {
             showError('Something went wrong. Please try again later.');
+            grecaptcha.reset();
             setLoading(false);
         }
     });
