@@ -59,6 +59,9 @@ try {
         exit();
     }
 
+    // Clean up old attempts older than 15 minutes
+    $pdo->prepare("DELETE FROM login_attempts WHERE attempted_at < :window")->execute(["window" => $window]);
+
     // Query the correct table based on role
     if ($role === "admin") {
         $sql = "SELECT id, username, email, password FROM admins WHERE username = :identifier OR email = :identifier";
