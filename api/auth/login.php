@@ -64,7 +64,7 @@ try {
 
     // Query the correct table based on role
     if ($role === "admin") {
-        $sql = "SELECT id, username, email, password FROM admins WHERE username = :identifier OR email = :identifier";
+        $sql = "SELECT id, username, email, password, theme, dark_mode FROM admins WHERE username = :identifier OR email = :identifier";
     } else {
         $sql = "SELECT id, username, email, password, theme, dark_mode FROM users WHERE username = :identifier OR email = :identifier";
     }
@@ -95,6 +95,8 @@ try {
         $_SESSION["username"]  = $user["username"];
         $_SESSION["role"]      = "admin";
         $_SESSION["email"]     = $user["email"];
+        $_SESSION["theme"]     = $user["theme"] ?? "blue";
+        $_SESSION["dark_mode"] = (int)($user["dark_mode"] ?? 0);
     } else {
         $_SESSION["user_id"]   = $user["id"];
         $_SESSION["username"]  = $user["username"];
@@ -108,8 +110,8 @@ try {
         "success" => true,
         "message" => "Login successful",
         "data" => [
-            "role"  => $role,
-            "theme" => $user["theme"] ?? "blue",
+            "role"      => $role,
+            "theme"     => $user["theme"] ?? "blue",
             "dark_mode" => (int)($user["dark_mode"] ?? 0)
         ]
     ]);
