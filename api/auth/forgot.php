@@ -29,10 +29,9 @@ if (!isValidEmail($email)) {
     exit();
 }
 
-// Rate limiting — block after 3 attempts in 15 minutes
-$window = date("Y-m-d H:i:s", strtotime("-15 minutes"));
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE identifier = :identifier AND attempt_type = 'forgot_password' AND attempted_at > :window");
-$stmt->execute(["identifier" => $email, "window" => $window]);
+// Rate limiting — block after 3 attempts in 15 minutes (use MySQL NOW() to avoid PHP/MySQL timezone mismatch)
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE identifier = :identifier AND attempt_type = 'forgot_password' AND attempted_at > NOW() - INTERVAL 15 MINUTE");
+$stmt->execute(["identifier" => $email]);
 $attempts = (int)$stmt->fetchColumn();
 
 if ($attempts >= 3) {

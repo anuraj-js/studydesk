@@ -47,20 +47,20 @@ try {
         exit();
     }
 
-    // Rate limiting — block after 5 failed attempts in 15 minutes
     $ip = $_SERVER["REMOTE_ADDR"] ?? "unknown";
-    $window = date("Y-m-d H:i:s", strtotime("-15 minutes"));
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE identifier = :identifier AND attempt_type = 'login' AND attempted_at > :window");
-    $stmt->execute(["identifier" => $identifier, "window" => $window]);
+
+    // Clean up expired attempts FIRST — before counting (use MySQL NOW() to avoid PHP/MySQL timezone mismatch)
+    $pdo->exec("DELETE FROM login_attempts WHERE attempted_at < NOW() - INTERVAL 15 MINUTE");
+
+    // Rate limiting — block after 5 failed attempts in the last 15 minutes
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE identifier = :identifier AND attempt_type = 'login' AND attempted_at > NOW() - INTERVAL 15 MINUTE");
+    $stmt->execute(["identifier" => $identifier]);
     $attempts = (int)$stmt->fetchColumn();
 
     if ($attempts >= 5) {
         echo json_encode(["success" => false, "message" => "Too many failed attempts. Please try again in 15 minutes.", "data" => null]);
         exit();
     }
-
-    // Clean up old attempts older than 15 minutes
-    $pdo->prepare("DELETE FROM login_attempts WHERE attempted_at < :window")->execute(["window" => $window]);
 
     // Query the correct table based on role
     if ($role === "admin") {
@@ -82,7 +82,7 @@ try {
         exit();
     }
 
-    // Clear attempts on success
+    // Clear this identifier's attempts on successful login
     $stmt = $pdo->prepare("DELETE FROM login_attempts WHERE identifier = :identifier AND attempt_type = 'login'");
     $stmt->execute(["identifier" => $identifier]);
 
