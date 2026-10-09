@@ -8,4 +8,11 @@ header('X-Content-Type-Options: nosniff');
 
 // Block this app from being embedded in iframes (clickjacking protection)
 header('X-Frame-Options: DENY');
+
+// Prevent leaking the URL (with query strings/tokens) as referrer
+header('Referrer-Policy: no-referrer');
+
+// Prevent caching of sensitive API responses
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Pragma: no-cache');
 ?>
