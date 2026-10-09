@@ -2,6 +2,7 @@
 // pages/admin/admin_activity.php
 
 require_once(__DIR__ . "/../../config/gatekeeper_admin.php");
+require_once(__DIR__ . "/../../config/db.php");
 require_once(__DIR__ . "/../../config/theme.php");
 
 $theme = $_SESSION['theme'] ?? 'blue';

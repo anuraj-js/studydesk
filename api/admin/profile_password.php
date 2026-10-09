@@ -15,7 +15,7 @@ if (empty($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
     exit();
 }
 
-$userId = $_SESSION["admin_id"];
+$adminId = $_SESSION["admin_id"];
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode(["success" => false, "message" => "Method not allowed", "data" => null]);
@@ -25,64 +25,49 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $json = file_get_contents("php://input");
 $data = json_decode($json, true);
 
-// Null-safe input (do NOT trim — spaces are valid password characters)
 $currentPassword = isset($data["current_password"]) ? $data["current_password"] : "";
-$newPassword     = isset($data["new_password"]) ? $data["new_password"] : "";
-$confirmPassword = isset($data["confirm_password"]) ? $data["confirm_password"] : "";
+$newPassword     = isset($data["new_password"])      ? $data["new_password"]     : "";
+$confirmPassword = isset($data["confirm_password"])  ? $data["confirm_password"] : "";
 
-// All fields required
 if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
     echo json_encode(["success" => false, "message" => "All fields are required", "data" => null]);
     exit();
 }
 
-// Validate new password length
-if (strlen($newPassword) < 6) {
-    echo json_encode(["success" => false, "message" => "Password must be at least 6 characters", "data" => null]);
+if (strlen($newPassword) < 8 || !preg_match('/[a-zA-Z]/', $newPassword) || !preg_match('/[0-9]/', $newPassword)) {
+    echo json_encode(["success" => false, "message" => "Password must be at least 8 characters with letters and numbers", "data" => null]);
     exit();
 }
 
-// Confirm match
 if ($newPassword !== $confirmPassword) {
     echo json_encode(["success" => false, "message" => "Passwords do not match", "data" => null]);
     exit();
 }
 
 try {
-    // Fetch current password hash
-    $stmt = $pdo->prepare("SELECT password FROM users WHERE id = :id");
-    $stmt->execute(["id" => $userId]);
-    $user = $stmt->fetch();
+    $stmt = $pdo->prepare("SELECT password FROM admins WHERE id = :id");
+    $stmt->execute(["id" => $adminId]);
+    $admin = $stmt->fetch();
 
-    if (!$user || !password_verify($currentPassword, $user["password"])) {
+    if (!$admin || !password_verify($currentPassword, $admin["password"])) {
         echo json_encode(["success" => false, "message" => "Current password is incorrect", "data" => null]);
         exit();
     }
 
-    // Prevent using same password
-    if (password_verify($newPassword, $user["password"])) {
+    if (password_verify($newPassword, $admin["password"])) {
         echo json_encode(["success" => false, "message" => "New password must be different from current password", "data" => null]);
         exit();
     }
 
-    // Hash and update
     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
-    $stmt->execute(["password" => $hashedPassword, "id" => $userId]);
+    $stmt = $pdo->prepare("UPDATE admins SET password = :password WHERE id = :id");
+    $stmt->execute(["password" => $hashedPassword, "id" => $adminId]);
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Password changed successfully",
-        "data" => null
-    ]);
+    echo json_encode(["success" => true, "message" => "Password changed successfully", "data" => null]);
     exit();
 
 } catch (PDOException $e) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Something went wrong. Please try again.",
-        "data" => null
-    ]);
+    echo json_encode(["success" => false, "message" => "Something went wrong. Please try again.", "data" => null]);
     exit();
 }
 ?>

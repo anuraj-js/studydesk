@@ -31,8 +31,8 @@ if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
 }
 
 // Validate new password
-if (strlen($newPassword) < 6) {
-    echo json_encode(["success" => false, "message" => "Password must be at least 6 characters", "data" => null]);
+if (strlen($newPassword) < 8 || !preg_match('/[a-zA-Z]/', $newPassword) || !preg_match('/[0-9]/', $newPassword)) {
+    echo json_encode(["success" => false, "message" => "Password must be at least 8 characters with letters and numbers", "data" => null]);
     exit();
 }
 

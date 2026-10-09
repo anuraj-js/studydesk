@@ -1,50 +1,40 @@
 // js/admin/admin_profile.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements - Profile Form
-    const profileForm = document.getElementById('profileForm');
-    const profileUsername = document.getElementById('profileUsername');
-    const profileEmail = document.getElementById('profileEmail');
-    const profilePhone = document.getElementById('profilePhone');
-    const profileAddress = document.getElementById('profileAddress');
-    const profileAcademicLevel = document.getElementById('profileAcademicLevel');
-    const profileGender = document.getElementById('profileGender');
-    const profileDob = document.getElementById('profileDob');
-    const profileJoined = document.getElementById('profileJoined');
-    const saveProfileBtn = document.getElementById('saveProfileBtn');
-    const saveProfileText = document.getElementById('saveProfileText');
+    const profileForm        = document.getElementById('profileForm');
+    const profileUsername    = document.getElementById('profileUsername');
+    const profileEmail       = document.getElementById('profileEmail');
+    const profileJoined      = document.getElementById('profileJoined');
+    const saveProfileBtn     = document.getElementById('saveProfileBtn');
+    const saveProfileText    = document.getElementById('saveProfileText');
     const saveProfileSpinner = document.getElementById('saveProfileSpinner');
 
-    // DOM Elements - Password Form
-    const passwordForm = document.getElementById('passwordForm');
-    const togglePasswordBtn = document.getElementById('togglePasswordForm');
-    const passwordFormWrapper = document.getElementById('passwordFormWrapper');
-    const currentPassword = document.getElementById('currentPassword');
-    const newPassword = document.getElementById('newPassword');
-    const confirmPassword = document.getElementById('confirmPassword');
-    const updatePasswordBtn = document.getElementById('updatePasswordBtn');
-    const updatePasswordText = document.getElementById('updatePasswordText');
+    const passwordForm          = document.getElementById('passwordForm');
+    const togglePasswordBtn     = document.getElementById('togglePasswordForm');
+    const passwordFormWrapper   = document.getElementById('passwordFormWrapper');
+    const currentPassword       = document.getElementById('currentPassword');
+    const newPassword           = document.getElementById('newPassword');
+    const confirmPassword       = document.getElementById('confirmPassword');
+    const updatePasswordBtn     = document.getElementById('updatePasswordBtn');
+    const updatePasswordText    = document.getElementById('updatePasswordText');
     const updatePasswordSpinner = document.getElementById('updatePasswordSpinner');
 
-    // Store original values for change detection
     let originalValues = {};
 
-    // Toggle password visibility for all toggle buttons
+    // Toggle password visibility
     document.querySelectorAll('.toggle-password').forEach((btn) => {
         btn.addEventListener('click', function() {
-            const targetId = this.dataset.target;
-            const input = document.getElementById(targetId);
+            const input = document.getElementById(this.dataset.target);
             if (input) {
                 const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
                 input.setAttribute('type', type);
-                const icon = this.querySelector('i');
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
             }
         });
     });
 
-    // Toggle password form visibility
+    // Toggle password form
     if (togglePasswordBtn && passwordFormWrapper) {
         togglePasswordBtn.addEventListener('click', function() {
             const isVisible = passwordFormWrapper.style.display !== 'none';
@@ -55,31 +45,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Set profile saving state
     function setProfileSaving(isSaving) {
         saveProfileBtn.disabled = isSaving;
-        if (isSaving) {
-            saveProfileText.style.display = 'none';
-            saveProfileSpinner.style.display = 'inline';
-        } else {
-            saveProfileText.style.display = 'inline';
-            saveProfileSpinner.style.display = 'none';
-        }
+        saveProfileText.style.display  = isSaving ? 'none'   : 'inline';
+        saveProfileSpinner.style.display = isSaving ? 'inline' : 'none';
     }
 
-    // Set password saving state
     function setPasswordSaving(isSaving) {
         updatePasswordBtn.disabled = isSaving;
-        if (isSaving) {
-            updatePasswordText.style.display = 'none';
-            updatePasswordSpinner.style.display = 'inline';
-        } else {
-            updatePasswordText.style.display = 'inline';
-            updatePasswordSpinner.style.display = 'none';
-        }
+        updatePasswordText.style.display    = isSaving ? 'none'   : 'inline';
+        updatePasswordSpinner.style.display = isSaving ? 'inline' : 'none';
     }
 
-    // Fetch profile
+    function formatDate(dateStr) {
+        if (!dateStr) return 'N/A';
+        return new Date(dateStr).toLocaleDateString('en-US', {
+            month: 'short', day: '2-digit', year: 'numeric'
+        });
+    }
+
+    function hasChanges() {
+        return (
+            profileUsername.value.trim() !== originalValues.username ||
+            profileEmail.value.trim()    !== originalValues.email
+        );
+    }
+
     async function fetchProfile() {
         try {
             const response = await fetch('../../api/admin/profile.php', {
@@ -90,24 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.success) {
                 const data = result.data;
-                if (profileJoined) profileJoined.textContent = formatDate(data.created_at);
+                if (profileJoined)   profileJoined.textContent = formatDate(data.created_at);
                 if (profileUsername) profileUsername.value = data.username || '';
-                if (profileEmail) profileEmail.value = data.email || '';
-                if (profilePhone) profilePhone.value = data.phone || '';
-                if (profileAddress) profileAddress.value = data.address || '';
-                if (profileAcademicLevel) profileAcademicLevel.value = data.academic_level || '';
-                if (profileGender) profileGender.value = data.gender || '';
-                if (profileDob) profileDob.value = data.dob || '';
+                if (profileEmail)    profileEmail.value    = data.email    || '';
 
-                // Store original values for change detection
                 originalValues = {
                     username: data.username || '',
-                    email: data.email || '',
-                    phone: data.phone || '',
-                    address: data.address || '',
-                    academicLevel: data.academic_level || '',
-                    gender: data.gender || '',
-                    dob: data.dob || ''
+                    email:    data.email    || ''
                 };
             } else {
                 showToast(result.message, 'error');
@@ -117,41 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Format date
-    function formatDate(dateStr) {
-        if (!dateStr) return 'N/A';
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: '2-digit',
-            year: 'numeric'
-        });
-    }
-
-    // Check if any changes were made
-    function hasChanges() {
-        const current = {
-            username: profileUsername.value.trim(),
-            email: profileEmail.value.trim(),
-            phone: profilePhone.value.trim() || '',
-            address: profileAddress.value.trim() || '',
-            academicLevel: profileAcademicLevel.value,
-            gender: profileGender.value,
-            dob: profileDob.value
-        };
-
-        return (
-            current.username !== originalValues.username ||
-            current.email !== originalValues.email ||
-            current.phone !== originalValues.phone ||
-            current.address !== originalValues.address ||
-            current.academicLevel !== originalValues.academicLevel ||
-            current.gender !== originalValues.gender ||
-            current.dob !== originalValues.dob
-        );
-    }
-
-    // Update profile
     if (profileForm) {
         profileForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -162,14 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const username = profileUsername.value.trim();
-            const email = profileEmail.value.trim();
-            const phone = profilePhone.value.trim() || '';
-            const address = profileAddress.value.trim() || '';
-            const academicLevel = profileAcademicLevel.value;
-            const gender = profileGender.value;
-            const dob = profileDob.value;
+            const email    = profileEmail.value.trim();
 
-            // Validate
             if (!username || username.length < 3) {
                 showToast('Username must be at least 3 characters.', 'error');
                 return;
@@ -180,21 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (!dob) {
-                showToast('Date of birth is required.', 'error');
-                return;
-            }
-
-            const data = {
-                username,
-                email,
-                phone,
-                address,
-                academic_level: academicLevel,
-                gender,
-                dob
-            };
-
             setProfileSaving(true);
 
             try {
@@ -202,42 +126,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'PUT',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({ username, email })
                 });
                 const result = await response.json();
 
-                if (!result.success) {
-                    if (result.message.includes('Username is already taken')) {
-                        showToast('Username is already taken.', 'warning');
-                    } else if (result.message.includes('Email is already registered')) {
-                        showToast('Email is already registered.', 'warning');
-                    } else {
-                        showToast(result.message, 'error');
-                    }
-                    setProfileSaving(false);
-                    return;
-                }
-
                 if (result.success) {
                     showToast('Profile updated successfully.', 'success');
-
-                    // Update original values
                     originalValues = {
                         username: result.data.user.username || '',
-                        email: result.data.user.email || '',
-                        phone: result.data.user.phone || '',
-                        address: result.data.user.address || '',
-                        academicLevel: result.data.user.academic_level || '',
-                        gender: result.data.user.gender || '',
-                        dob: result.data.user.dob || ''
+                        email:    result.data.user.email    || ''
                     };
 
-                    // Update sidebar username + email
+                    const sidebarName  = document.querySelector('.sidebar-user-name');
                     const sidebarEmail = document.querySelector('.sidebar-user-email');
+                    if (sidebarName)  sidebarName.textContent  = result.data.user.username;
                     if (sidebarEmail) sidebarEmail.textContent = result.data.user.email;
-
-                    const sidebarName = document.querySelector('.sidebar-user-name');
-                    if (sidebarName) sidebarName.textContent = result.data.user.username;
+                } else {
+                    showToast(result.message, 'error');
                 }
             } catch (error) {
                 showToast('Something went wrong.', 'error');
@@ -247,13 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Update password
     if (passwordForm) {
         passwordForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const currentPass = currentPassword.value;
-            const newPass = newPassword.value;
+            const newPass     = newPassword.value;
             const confirmPass = confirmPassword.value;
 
             if (!currentPass || !newPass || !confirmPass) {
@@ -261,8 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (newPass.length < 6) {
-                showToast('New password must be at least 6 characters.', 'error');
+            if (newPass.length < 8 || !/[a-zA-Z]/.test(newPass) || !/[0-9]/.test(newPass)) {
+                showToast('New password must be at least 8 characters with letters and numbers.', 'error');
                 return;
             }
 
@@ -280,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         current_password: currentPass,
-                        new_password: newPass,
+                        new_password:     newPass,
                         confirm_password: confirmPass
                     })
                 });
@@ -289,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (result.success) {
                     showToast('Password changed successfully.', 'success');
                     currentPassword.value = '';
-                    newPassword.value = '';
+                    newPassword.value     = '';
                     confirmPassword.value = '';
                 } else {
                     showToast(result.message, 'error');
@@ -302,25 +206,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Keyboard shortcut: Ctrl+S to save profile
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
-            if (profileForm) {
-                profileForm.dispatchEvent(new Event('submit'));
-            }
+            if (profileForm) profileForm.dispatchEvent(new Event('submit'));
         }
-
         if (e.key === 'Escape') {
             if (passwordFormWrapper && passwordFormWrapper.style.display !== 'none') {
                 passwordFormWrapper.style.display = 'none';
-                if (togglePasswordBtn) {
-                    togglePasswordBtn.innerHTML = '<i class="fas fa-key"></i> Change Password';
-                }
+                if (togglePasswordBtn) togglePasswordBtn.innerHTML = '<i class="fas fa-key"></i> Change Password';
             }
         }
     });
 
-    // Load profile
     fetchProfile();
 });
