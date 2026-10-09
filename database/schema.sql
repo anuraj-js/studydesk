@@ -51,6 +51,8 @@ CREATE TABLE `admins` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `theme` enum('blue','purple','red') DEFAULT 'blue',
+  `dark_mode` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
