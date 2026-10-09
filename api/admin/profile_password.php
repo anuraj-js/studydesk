@@ -5,7 +5,7 @@ session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
 
-if (empty($_SESSION["user_id"])) {
+if (empty($_SESSION["admin_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
     exit();
 }
@@ -15,7 +15,7 @@ if (empty($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
     exit();
 }
 
-$userId = $_SESSION["user_id"];
+$userId = $_SESSION["admin_id"];
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode(["success" => false, "message" => "Method not allowed", "data" => null]);

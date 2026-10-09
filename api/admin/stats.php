@@ -5,7 +5,7 @@ session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
 
-if (empty($_SESSION["user_id"])) {
+if (empty($_SESSION["admin_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
     exit();
 }
