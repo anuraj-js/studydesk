@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'long-break': { label: 'Long Break', default: 15, max: 30 }
     };
 
+    const MAX_TASK_NAME_LENGTH = 255;
+
     let currentMode = 'pomodoro';
     let totalSeconds = MODES.pomodoro.default * 60;
     let remainingSeconds = totalSeconds;
@@ -373,8 +375,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const taskName = taskNameInput.value.trim();
-        if (taskName.length > 100) {
-            showToast('Task name is too long (max 100 characters).', 'error');
+
+        if (!Validator.isEmpty(taskName) && !Validator.isWithinLength(taskName, MAX_TASK_NAME_LENGTH)) {
+            showToast(`Task name must be ${MAX_TASK_NAME_LENGTH} characters or less.`, 'error');
             return;
         }
 

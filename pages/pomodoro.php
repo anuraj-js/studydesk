@@ -102,7 +102,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
                 <label for="taskName">
                     <i class="fas fa-tag"></i> What are you working on?
                 </label>
-                <input type="text" id="taskName" placeholder="e.g. Chapter 4 Notes">
+                <input type="text" id="taskName" placeholder="e.g. Chapter 4 Notes" maxlength="255">
 
                 <!-- Proceed without task name checkbox -->
                 <div class="task-option">
@@ -138,6 +138,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
 
     <script src="../js/notification.js"></script>
     <script src="../js/sidebar.js"></script>
+    <script src="../js/validator.js"></script>
     <script src="../js/pomodoro.js"></script>
     <script src="../js/theme.js"></script>
 </body>

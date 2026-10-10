@@ -4,6 +4,7 @@
 session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode(["success" => false, "message" => "Method not allowed", "data" => null]);
@@ -24,8 +25,20 @@ $data = json_decode($json, true);
 $taskName = isset($data["task_name"]) ? (trim($data["task_name"]) ?: "Untitled") : "Untitled";
 $totalSeconds = isset($data["total_seconds"]) ? (int)$data["total_seconds"] : 0;
 
+// Validate task name length
+if (!isWithinLength($taskName, 255)) {
+    echo json_encode(["success" => false, "message" => "Task name must be 255 characters or less", "data" => null]);
+    exit();
+}
+
+// Validate duration: must be > 0 and <= 3 hours (10800 seconds)
 if ($totalSeconds <= 0) {
     echo json_encode(["success" => false, "message" => "Invalid duration", "data" => null]);
+    exit();
+}
+
+if ($totalSeconds > 10800) {
+    echo json_encode(["success" => false, "message" => "Duration cannot exceed 3 hours", "data" => null]);
     exit();
 }
 
