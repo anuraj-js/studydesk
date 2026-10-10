@@ -29,7 +29,12 @@ if (!isValidEmail($email)) {
     exit();
 }
 
-// Rate limiting — block after 3 attempts in 15 minutes (use MySQL NOW() to avoid PHP/MySQL timezone mismatch)
+if (!isWithinLength($email, 100)) {
+    echo json_encode(["success" => false, "message" => "Email must be 100 characters or less.", "data" => null]);
+    exit();
+}
+
+// Rate limiting — block after 3 attempts in 15 minutes
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE identifier = :identifier AND attempt_type = 'forgot_password' AND attempted_at > NOW() - INTERVAL 15 MINUTE");
 $stmt->execute(["identifier" => $email]);
 $attempts = (int)$stmt->fetchColumn();
@@ -40,11 +45,17 @@ if ($attempts >= 3) {
 }
 
 try {
-    $stmt = $pdo->prepare("SELECT id, username FROM users WHERE email = :email");
+    // Look up email across both users and admins
+    $stmt = $pdo->prepare(
+        "SELECT id, username, 'user' AS role FROM users WHERE email = :email
+         UNION
+         SELECT id, username, 'admin' AS role FROM admins WHERE email = :email
+         LIMIT 1"
+    );
     $stmt->execute(["email" => $email]);
-    $user = $stmt->fetch();
+    $account = $stmt->fetch();
 
-    if (!$user) {
+    if (!$account) {
         // Log attempt even for non-existent emails to prevent enumeration via rate limit bypass
         $stmt = $pdo->prepare("INSERT INTO login_attempts (identifier, attempt_type, ip_address) VALUES (:identifier, 'forgot_password', :ip)");
         $stmt->execute(["identifier" => $email, "ip" => $ip]);
@@ -54,27 +65,30 @@ try {
         exit();
     }
 
+    $role   = $account["role"];
+    $userId = (int)$account["id"];
+
     // Log attempt
     $stmt = $pdo->prepare("INSERT INTO login_attempts (identifier, attempt_type, ip_address) VALUES (:identifier, 'forgot_password', :ip)");
     $stmt->execute(["identifier" => $email, "ip" => $ip]);
 
-    // Delete existing tokens for this user
-    $stmt = $pdo->prepare("DELETE FROM password_resets WHERE user_id = :user_id AND role = 'user'");
-    $stmt->execute(["user_id" => $user["id"]]);
+    // Delete existing tokens for this account
+    $stmt = $pdo->prepare("DELETE FROM password_resets WHERE user_id = :user_id AND role = :role");
+    $stmt->execute(["user_id" => $userId, "role" => $role]);
 
     // Generate token — store hashed, send raw
     $rawToken    = bin2hex(random_bytes(32));
     $storedToken = hash("sha256", $rawToken);
     $expiresAt   = date("Y-m-d H:i:s", strtotime("+1 hour"));
 
-    $stmt = $pdo->prepare("INSERT INTO password_resets (user_id, role, token, expires_at) VALUES (:user_id, 'user', :token, :expires_at)");
-    $stmt->execute(["user_id" => $user["id"], "token" => $storedToken, "expires_at" => $expiresAt]);
+    $stmt = $pdo->prepare("INSERT INTO password_resets (user_id, role, token, expires_at) VALUES (:user_id, :role, :token, :expires_at)");
+    $stmt->execute(["user_id" => $userId, "role" => $role, "token" => $storedToken, "expires_at" => $expiresAt]);
 
     // Build reset link using APP_URL from .env
     $appUrl    = rtrim(getenv("APP_URL") ?: "http://localhost/studydesk", "/");
-    $resetLink = $appUrl . "/forms/reset.html?token=" . $rawToken;
+    $resetLink = $appUrl . "/forms/reset.html?token=" . $rawToken . "&role=" . $role;
 
-    $emailSent = sendResetEmail($email, $user["username"], $resetLink);
+    $emailSent = sendResetEmail($email, $account["username"], $resetLink);
 
     usleep(rand(500000, 2500000));
 

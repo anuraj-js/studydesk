@@ -81,15 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Username: min 3, alphanumeric + underscore only
+        // Username: 3–50 chars, letters/numbers/underscores only, cannot start with a digit
         if (!Validator.isAlphanumericUsername(username)) {
-            showError('Username must be at least 3 characters and contain only letters, numbers, or underscores.');
-            return;
-        }
-
-        // Username max length
-        if (!Validator.isWithinLength(username, 50)) {
-            showError('Username must be 50 characters or less.');
+            showError('Username must be 3–50 characters, contain only letters, numbers, or underscores, and cannot start with a number.');
             return;
         }
 
@@ -105,9 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Password: min 8, must have letter and number
+        // Password: 8–72 chars, must have letter and number
         if (!Validator.isValidPassword(password)) {
-            showError('Password must be at least 8 characters and include letters and numbers.');
+            showError('Password must be 8–72 characters and include letters and numbers.');
             return;
         }
 

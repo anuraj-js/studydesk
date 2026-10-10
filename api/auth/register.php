@@ -46,15 +46,9 @@ try {
         exit();
     }
 
-    // Username: alphanumeric + underscore, min 3 chars
+    // Username: 3–50 chars, letters/numbers/underscores only, cannot start with a digit
     if (!isAlphanumericUsername($username)) {
-        echo json_encode(["success" => false, "message" => "Username must be at least 3 characters and contain only letters, numbers, or underscores.", "data" => null]);
-        exit();
-    }
-
-    // Username max length
-    if (!isWithinLength($username, 50)) {
-        echo json_encode(["success" => false, "message" => "Username must be 50 characters or less.", "data" => null]);
+        echo json_encode(["success" => false, "message" => "Username must be 3–50 characters, contain only letters, numbers, or underscores, and cannot start with a number.", "data" => null]);
         exit();
     }
 
@@ -70,9 +64,9 @@ try {
         exit();
     }
 
-    // Password: min 8, letter + number
+    // Password: 8–72, letter + number
     if (!isValidPassword($password)) {
-        echo json_encode(["success" => false, "message" => "Password must be at least 8 characters and include letters and numbers.", "data" => null]);
+        echo json_encode(["success" => false, "message" => "Password must be 8–72 characters and include letters and numbers.", "data" => null]);
         exit();
     }
 

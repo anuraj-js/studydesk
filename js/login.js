@@ -77,6 +77,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Bounds — parity with server
+        if (!Validator.isWithinLength(identifierValue, 100)) {
+            showError('Username/email must be 100 characters or less.');
+            return;
+        }
+
+        if (!Validator.isWithinLength(passwordValue, 72)) {
+            showError('Password must be 72 characters or less.');
+            return;
+        }
+
         // Validate reCAPTCHA
         if (!grecaptcha.getResponse()) {
             showError('Please complete the CAPTCHA verification.');

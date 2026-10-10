@@ -29,7 +29,7 @@ if (isEmpty($password)) {
 }
 
 if (!isValidPassword($password)) {
-    echo json_encode(["success" => false, "message" => "Password must be at least 8 characters and include letters and numbers.", "data" => null]);
+    echo json_encode(["success" => false, "message" => "Password must be 8–72 characters and include letters and numbers.", "data" => null]);
     exit();
 }
 
@@ -37,7 +37,7 @@ try {
     // Hash the incoming token before querying
     $storedToken = hash("sha256", $rawToken);
 
-    $stmt = $pdo->prepare("SELECT user_id, expires_at FROM password_resets WHERE token = :token");
+    $stmt = $pdo->prepare("SELECT user_id, role, expires_at FROM password_resets WHERE token = :token");
     $stmt->execute(["token" => $storedToken]);
     $reset = $stmt->fetch();
 
@@ -56,10 +56,16 @@ try {
         exit();
     }
 
-    $userId         = $reset["user_id"];
+    $userId         = (int)$reset["user_id"];
+    $role           = $reset["role"]; // trusted source — from DB, not client
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
+    // Update the correct table based on the role stored with the token
+    if ($role === "admin") {
+        $stmt = $pdo->prepare("UPDATE admins SET password = :password WHERE id = :id");
+    } else {
+        $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
+    }
     $stmt->execute(["password" => $hashedPassword, "id" => $userId]);
 
     $stmt = $pdo->prepare("DELETE FROM password_resets WHERE token = :token");

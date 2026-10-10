@@ -26,9 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Get token from URL
+    // Get token and role from URL
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
+    const role  = urlParams.get('role') === 'admin' ? 'admin' : 'user';
 
     if (token) {
         tokenInput.value = token;
@@ -83,8 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (newPassword.length < 6) {
-            showError('Password must be at least 6 characters.');
+        if (!Validator.isValidPassword(newPassword)) {
+            showError('Password must be 8–72 characters and include letters and numbers.');
+            return;
+        }
+
+        if (!Validator.isWithinLength(newPassword, 72)) {
+            showError('Password must be 72 characters or less.');
             return;
         }
 
@@ -102,7 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     token: token,
-                    password: newPassword
+                    password: newPassword,
+                    role: role
                 })
             });
 

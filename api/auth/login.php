@@ -38,6 +38,17 @@ try {
         exit();
     }
 
+    // Bound checks — prevent oversized payloads
+    if (!isWithinLength($identifier, 100)) {
+        echo json_encode(["success" => false, "message" => "Username/email must be 100 characters or less.", "data" => null]);
+        exit();
+    }
+
+    if (!isWithinLength($password, 72)) {
+        echo json_encode(["success" => false, "message" => "Password must be 72 characters or less.", "data" => null]);
+        exit();
+    }
+
     // Verify reCAPTCHA
     $secret = getenv("RECAPTCHA_SECRET_KEY");
     $verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secret}&response={$captcha}");

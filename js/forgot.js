@@ -43,13 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const email = emailInput.value.trim();
 
-        if (!email) {
+        if (Validator.isEmpty(email)) {
             showError('Please enter your email address.');
             return;
         }
 
-        if (!email.includes('@') || !email.includes('.')) {
+        if (!Validator.isValidEmail(email)) {
             showError('Please enter a valid email address.');
+            return;
+        }
+
+        if (!Validator.isWithinLength(email, 100)) {
+            showError('Email must be 100 characters or less.');
             return;
         }
 
