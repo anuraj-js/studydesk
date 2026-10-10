@@ -96,11 +96,11 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
             <input type="hidden" id="examId" value="">
             <div class="form-group">
                 <label for="examName">Exam name</label>
-                <input type="text" id="examName" placeholder="e.g. Midterm, Final, Pre-Board" required>
+                <input type="text" id="examName" placeholder="e.g. Midterm, Final, Pre-Board" required maxlength="255">
             </div>
             <div class="form-group">
                 <label for="examSubject">Subject</label>
-                <input type="text" id="examSubject" placeholder="e.g. Physics, Chemistry, Mathematics" required>
+                <input type="text" id="examSubject" placeholder="e.g. Physics, Chemistry, Mathematics" required maxlength="255">
             </div>
             <div class="form-group">
                 <label for="examDate">Exam date</label>
@@ -114,6 +114,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
 
     <script src="../js/notification.js"></script>
     <script src="../js/sidebar.js"></script>
+    <script src="../js/validator.js"></script>
     <script src="../js/exams.js"></script>
     <script src="../js/theme.js"></script>
 </body>

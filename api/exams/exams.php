@@ -4,6 +4,7 @@
 session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if (empty($_SESSION["user_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
@@ -60,18 +61,40 @@ if ($method === "POST") {
         $subject = isset($data["subject"]) ? trim($data["subject"]) : "";
         $examDate = isset($data["exam_date"]) ? $data["exam_date"] : "";
 
-        if (empty($examName)) {
+        // Validate exam name
+        if (isEmpty($examName)) {
             echo json_encode(["success" => false, "message" => "Exam name is required", "data" => null]);
             exit();
         }
 
-        if (empty($subject)) {
+        if (!hasLetters($examName)) {
+            echo json_encode(["success" => false, "message" => "Exam name must contain at least one letter", "data" => null]);
+            exit();
+        }
+
+        if (!isWithinLength($examName, 255)) {
+            echo json_encode(["success" => false, "message" => "Exam name must be 255 characters or less", "data" => null]);
+            exit();
+        }
+
+        // Validate subject
+        if (isEmpty($subject)) {
             echo json_encode(["success" => false, "message" => "Subject is required", "data" => null]);
             exit();
         }
 
-        $date = DateTime::createFromFormat("Y-m-d", $examDate);
-        if (!$date || $date->format("Y-m-d") !== $examDate) {
+        if (!hasLetters($subject)) {
+            echo json_encode(["success" => false, "message" => "Subject must contain at least one letter", "data" => null]);
+            exit();
+        }
+
+        if (!isWithinLength($subject, 255)) {
+            echo json_encode(["success" => false, "message" => "Subject must be 255 characters or less", "data" => null]);
+            exit();
+        }
+
+        // Validate exam date
+        if (!isValidDate($examDate)) {
             echo json_encode(["success" => false, "message" => "Invalid exam date format", "data" => null]);
             exit();
         }
@@ -147,8 +170,16 @@ if ($method === "PUT") {
 
         if (isset($data["exam_name"])) {
             $examName = trim($data["exam_name"]);
-            if (empty($examName)) {
+            if (isEmpty($examName)) {
                 echo json_encode(["success" => false, "message" => "Exam name cannot be empty", "data" => null]);
+                exit();
+            }
+            if (!hasLetters($examName)) {
+                echo json_encode(["success" => false, "message" => "Exam name must contain at least one letter", "data" => null]);
+                exit();
+            }
+            if (!isWithinLength($examName, 255)) {
+                echo json_encode(["success" => false, "message" => "Exam name must be 255 characters or less", "data" => null]);
                 exit();
             }
             $fields[] = "exam_name = :exam_name";
@@ -157,8 +188,16 @@ if ($method === "PUT") {
 
         if (isset($data["subject"])) {
             $subject = trim($data["subject"]);
-            if (empty($subject)) {
+            if (isEmpty($subject)) {
                 echo json_encode(["success" => false, "message" => "Subject cannot be empty", "data" => null]);
+                exit();
+            }
+            if (!hasLetters($subject)) {
+                echo json_encode(["success" => false, "message" => "Subject must contain at least one letter", "data" => null]);
+                exit();
+            }
+            if (!isWithinLength($subject, 255)) {
+                echo json_encode(["success" => false, "message" => "Subject must be 255 characters or less", "data" => null]);
                 exit();
             }
             $fields[] = "subject = :subject";
@@ -166,8 +205,7 @@ if ($method === "PUT") {
         }
 
         if (isset($data["exam_date"])) {
-            $date = DateTime::createFromFormat("Y-m-d", $data["exam_date"]);
-            if (!$date || $date->format("Y-m-d") !== $data["exam_date"]) {
+            if (!isValidDate($data["exam_date"])) {
                 echo json_encode(["success" => false, "message" => "Invalid exam date format", "data" => null]);
                 exit();
             }

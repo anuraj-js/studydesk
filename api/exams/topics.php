@@ -4,6 +4,7 @@
 session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if (empty($_SESSION["user_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
@@ -60,8 +61,19 @@ if ($method === "POST") {
             exit();
         }
 
-        if (empty($title)) {
+        // Validate topic title
+        if (isEmpty($title)) {
             echo json_encode(["success" => false, "message" => "Topic name is required", "data" => null]);
+            exit();
+        }
+
+        if (!hasLetters($title)) {
+            echo json_encode(["success" => false, "message" => "Topic name must contain at least one letter", "data" => null]);
+            exit();
+        }
+
+        if (!isWithinLength($title, 255)) {
+            echo json_encode(["success" => false, "message" => "Topic name must be 255 characters or less", "data" => null]);
             exit();
         }
 
@@ -126,12 +138,23 @@ if ($method === "PUT") {
         $json = file_get_contents("php://input");
         $data = json_decode($json, true);
 
-        if (!isset($data["title"]) || empty(trim($data["title"]))) {
+        if (!isset($data["title"]) || isEmpty(trim($data["title"]))) {
             echo json_encode(["success" => false, "message" => "No fields to update", "data" => null]);
             exit();
         }
 
         $title = trim($data["title"]);
+
+        if (!hasLetters($title)) {
+            echo json_encode(["success" => false, "message" => "Topic name must contain at least one letter", "data" => null]);
+            exit();
+        }
+
+        if (!isWithinLength($title, 255)) {
+            echo json_encode(["success" => false, "message" => "Topic name must be 255 characters or less", "data" => null]);
+            exit();
+        }
+
         $sql = "UPDATE topics SET title = :title WHERE id = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(["title" => $title, "id" => $topicId]);

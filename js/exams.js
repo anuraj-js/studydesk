@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
 
                     <div class="topic-form-inline" data-exam-id="${exam.id}">
-                        <input type="text" class="topic-input" placeholder="Add topic" data-exam-id="${exam.id}">
+                        <input type="text" class="topic-input" placeholder="Add topic" data-exam-id="${exam.id}" maxlength="255">
                         <button class="btn btn-primary btn-sm add-topic-btn" data-exam-id="${exam.id}">Add</button>
                     </div>
 
@@ -363,6 +363,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
+                // Validate topic title
+                if (!Validator.hasLetters(title)) {
+                    showToast('Topic name must contain at least one letter.', 'error');
+                    return;
+                }
+
+                if (!Validator.isWithinLength(title, 255)) {
+                    showToast('Topic name must be 255 characters or less.', 'error');
+                    return;
+                }
+
                 // Check if topic already exists in this exam
                 if (topicNameExists(examId, title)) {
                     showToast('A topic with this name already exists in this exam.', 'warning');
@@ -381,6 +392,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     const title = this.value.trim();
                     if (!title) {
                         showToast('Topic name is required', 'error');
+                        return;
+                    }
+
+                    // Validate topic title
+                    if (!Validator.hasLetters(title)) {
+                        showToast('Topic name must contain at least one letter.', 'error');
+                        return;
+                    }
+
+                    if (!Validator.isWithinLength(title, 255)) {
+                        showToast('Topic name must be 255 characters or less.', 'error');
                         return;
                     }
 
@@ -637,13 +659,35 @@ document.addEventListener('DOMContentLoaded', () => {
             exam_date: examDateInput.value
         };
 
-        if (!data.exam_name) {
-            showToast('Exam name is required', 'error');
+        // Validate exam name
+        if (Validator.isEmpty(data.exam_name)) {
+            showToast('Exam name is required.', 'error');
             return;
         }
 
-        if (!data.subject) {
-            showToast('Subject is required', 'error');
+        if (!Validator.hasLetters(data.exam_name)) {
+            showToast('Exam name must contain at least one letter.', 'error');
+            return;
+        }
+
+        if (!Validator.isWithinLength(data.exam_name, 255)) {
+            showToast('Exam name must be 255 characters or less.', 'error');
+            return;
+        }
+
+        // Validate subject
+        if (Validator.isEmpty(data.subject)) {
+            showToast('Subject is required.', 'error');
+            return;
+        }
+
+        if (!Validator.hasLetters(data.subject)) {
+            showToast('Subject must contain at least one letter.', 'error');
+            return;
+        }
+
+        if (!Validator.isWithinLength(data.subject, 255)) {
+            showToast('Subject must be 255 characters or less.', 'error');
             return;
         }
 
