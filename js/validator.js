@@ -10,14 +10,21 @@ const Validator = (() => {
         return !value || value.trim() === '';
     }
 
-    // Returns true if value contains only letters, numbers, and underscores (min 3 chars)
+    // Returns true if value starts with a digit
+    function startsWithNumber(value) {
+        return /^\d/.test(value);
+    }
+
+    // Returns true if value is a valid username (letters, numbers, underscores; 3–50 chars, cannot start with a digit)
     function isAlphanumericUsername(value) {
-        return /^[a-zA-Z0-9_]{3,}$/.test(value);
+        if (!/^[a-zA-Z0-9_]{3,50}$/.test(value)) return false;
+        if (startsWithNumber(value)) return false;
+        return true;
     }
 
     // Returns true if value looks like a valid email address
     function isValidEmail(value) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(value);
     }
 
     // Returns true if value is exactly 10 digits
@@ -25,9 +32,10 @@ const Validator = (() => {
         return /^\d{10}$/.test(value);
     }
 
-    // Returns true if password is min 8 chars, has at least one letter and one number
+    // Returns true if password is 8–72 chars, contains at least one letter and one number
     function isValidPassword(value) {
-        if (!value || value.length < 8) return false;
+        if (!value) return false;
+        if (value.length < 8 || value.length > 72) return false;
         if (!/[a-zA-Z]/.test(value)) return false;
         if (!/[0-9]/.test(value)) return false;
         return true;
@@ -36,9 +44,9 @@ const Validator = (() => {
     // Returns true if value is a valid YYYY-MM-DD date
     function isValidDate(value) {
         if (!value) return false;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
         const date = new Date(value);
         if (isNaN(date.getTime())) return false;
-        // Ensure it matches Y-m-d format exactly
         const [y, m, d] = value.split('-').map(Number);
         return date.getFullYear() === y &&
                date.getMonth() + 1 === m &&
@@ -66,6 +74,7 @@ const Validator = (() => {
 
     return {
         isEmpty,
+        startsWithNumber,
         isAlphanumericUsername,
         isValidEmail,
         isValidPhone,

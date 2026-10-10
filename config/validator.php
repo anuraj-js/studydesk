@@ -7,9 +7,16 @@ function isEmpty(string $value): bool {
     return trim($value) === '';
 }
 
-// Returns true if value contains only letters, numbers, and underscores (min 3 chars)
+// Returns true if value starts with a digit
+function startsWithNumber(string $value): bool {
+    return preg_match('/^\d/', $value) === 1;
+}
+
+// Returns true if value is a valid username (letters, numbers, underscores; 3–50 chars, cannot start with a digit)
 function isAlphanumericUsername(string $value): bool {
-    return preg_match('/^[a-zA-Z0-9_]{3,}$/', $value) === 1;
+    if (preg_match('/^[a-zA-Z0-9_]{3,50}$/', $value) !== 1) return false;
+    if (startsWithNumber($value)) return false;
+    return true;
 }
 
 // Returns true if value is a valid email address
@@ -22,9 +29,10 @@ function isValidPhone(string $value): bool {
     return preg_match('/^\d{10}$/', $value) === 1;
 }
 
-// Returns true if password is min 8 chars, contains at least one letter and one number
+// Returns true if password is 8–72 chars, contains at least one letter and one number
 function isValidPassword(string $value): bool {
-    if (strlen($value) < 8) return false;
+    $len = strlen($value);
+    if ($len < 8 || $len > 72) return false;
     if (!preg_match('/[a-zA-Z]/', $value)) return false;
     if (!preg_match('/[0-9]/', $value)) return false;
     return true;
@@ -32,6 +40,7 @@ function isValidPassword(string $value): bool {
 
 // Returns true if value is a valid Y-m-d date
 function isValidDate(string $value): bool {
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) return false;
     $date = DateTime::createFromFormat('Y-m-d', $value);
     return $date && $date->format('Y-m-d') === $value;
 }
