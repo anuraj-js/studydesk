@@ -58,6 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Validate reCAPTCHA
+        if (!grecaptcha.getResponse()) {
+            showError('Please complete the CAPTCHA verification.');
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -65,7 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({
+                    email: email,
+                    'g-recaptcha-response': grecaptcha.getResponse()
+                })
             });
 
             const result = await response.json();
@@ -73,11 +82,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success) {
                 showSuccess(result.message);
                 form.reset();
+                grecaptcha.reset();
             } else {
                 showError(result.message);
+                grecaptcha.reset();
             }
         } catch (error) {
             showError('Something went wrong. Please try again.');
+            grecaptcha.reset();
         } finally {
             setLoading(false);
         }

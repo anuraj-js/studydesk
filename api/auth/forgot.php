@@ -16,8 +16,18 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $json = file_get_contents("php://input");
 $data = json_decode($json, true);
 
-$email = isset($data["email"]) ? trim($data["email"]) : "";
-$ip    = $_SERVER["REMOTE_ADDR"] ?? "unknown";
+$email   = isset($data["email"]) ? trim($data["email"]) : "";
+$captcha = isset($data["g-recaptcha-response"]) ? $data["g-recaptcha-response"] : "";
+$ip      = $_SERVER["REMOTE_ADDR"] ?? "unknown";
+
+// Verify reCAPTCHA first
+$secret = getenv("RECAPTCHA_SECRET_KEY");
+$verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secret}&response={$captcha}");
+$captchaResult = json_decode($verify, true);
+if (!$captchaResult["success"]) {
+    echo json_encode(["success" => false, "message" => "CAPTCHA verification failed.", "data" => null]);
+    exit();
+}
 
 if (isEmpty($email)) {
     echo json_encode(["success" => false, "message" => "Please enter your email address.", "data" => null]);
