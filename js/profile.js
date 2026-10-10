@@ -169,19 +169,43 @@ document.addEventListener('DOMContentLoaded', () => {
             const gender = profileGender.value;
             const dob = profileDob.value;
 
-            // Validate
-            if (!username || username.length < 3) {
-                showToast('Username must be at least 3 characters.', 'error');
+            // Validate username
+            if (!Validator.isAlphanumericUsername(username)) {
+                showToast('Username must be 3-50 characters, contain only letters, numbers, or underscores, and cannot start with a number.', 'error');
                 return;
             }
 
-            if (!email || !email.includes('@') || !email.includes('.')) {
+            // Validate email
+            if (!Validator.isValidEmail(email)) {
                 showToast('Please enter a valid email address.', 'error');
                 return;
             }
 
+            if (!Validator.isWithinLength(email, 100)) {
+                showToast('Email must be 100 characters or less.', 'error');
+                return;
+            }
+
+            // Validate phone (optional)
+            if (phone && !Validator.isValidPhone(phone)) {
+                showToast('Phone number must be exactly 10 digits.', 'error');
+                return;
+            }
+
+            // Validate address (optional)
+            if (address && !Validator.isWithinLength(address, 255)) {
+                showToast('Address must be 255 characters or less.', 'error');
+                return;
+            }
+
+            // Validate DOB
             if (!dob) {
                 showToast('Date of birth is required.', 'error');
+                return;
+            }
+
+            if (!Validator.isAtLeast13(dob)) {
+                showToast('You must be at least 13 years old.', 'error');
                 return;
             }
 
@@ -270,8 +294,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (newPass.length < 8 || !/[a-zA-Z]/.test(newPass) || !/[0-9]/.test(newPass)) {
-                showToast('New password must be at least 8 characters with letters and numbers.', 'error');
+            if (!Validator.isValidPassword(newPass)) {
+                showToast('New password must be 8-72 characters with letters and numbers.', 'error');
+                return;
+            }
+
+            if (!Validator.isWithinLength(newPass, 72)) {
+                showToast('New password must be 72 characters or less.', 'error');
                 return;
             }
 

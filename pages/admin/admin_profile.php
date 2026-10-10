@@ -117,6 +117,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
 
     <script src="../../js/notification.js"></script>
     <script src="../../js/sidebar.js"></script>
+    <script src="../../js/validator.js"></script>
     <script src="../../js/admin/admin_profile.js"></script>
     <script src="../../js/theme.js"></script>
 </body>

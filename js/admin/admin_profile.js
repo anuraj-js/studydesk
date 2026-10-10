@@ -109,13 +109,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const username = profileUsername.value.trim();
             const email    = profileEmail.value.trim();
 
-            if (!username || username.length < 3) {
-                showToast('Username must be at least 3 characters.', 'error');
+            // Validate username
+            if (!Validator.isAlphanumericUsername(username)) {
+                showToast('Username must be 3–50 characters, contain only letters, numbers, or underscores, and cannot start with a number.', 'error');
                 return;
             }
 
-            if (!email || !email.includes('@') || !email.includes('.')) {
+            // Validate email
+            if (!Validator.isValidEmail(email)) {
                 showToast('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            if (!Validator.isWithinLength(email, 100)) {
+                showToast('Email must be 100 characters or less.', 'error');
                 return;
             }
 
@@ -165,8 +172,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (newPass.length < 8 || !/[a-zA-Z]/.test(newPass) || !/[0-9]/.test(newPass)) {
-                showToast('New password must be at least 8 characters with letters and numbers.', 'error');
+            if (!Validator.isValidPassword(newPass)) {
+                showToast('New password must be 8–72 characters with letters and numbers.', 'error');
+                return;
+            }
+
+            if (!Validator.isWithinLength(newPass, 72)) {
+                showToast('New password must be 72 characters or less.', 'error');
                 return;
             }
 

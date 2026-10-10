@@ -4,6 +4,7 @@
 session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if (empty($_SESSION["user_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
@@ -47,8 +48,8 @@ if ($method === "PUT") {
         // Username
         if (isset($data["username"])) {
             $username = trim($data["username"]);
-            if (strlen($username) < 3) {
-                echo json_encode(["success" => false, "message" => "Username must be at least 3 characters", "data" => null]);
+            if (!isAlphanumericUsername($username)) {
+                echo json_encode(["success" => false, "message" => "Username must be 3–50 characters, contain only letters, numbers, or underscores, and cannot start with a number.", "data" => null]);
                 exit();
             }
             $stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username AND id != :user_id");
@@ -64,8 +65,12 @@ if ($method === "PUT") {
         // Email
         if (isset($data["email"])) {
             $email = trim($data["email"]);
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (!isValidEmail($email)) {
                 echo json_encode(["success" => false, "message" => "Please enter a valid email address", "data" => null]);
+                exit();
+            }
+            if (!isWithinLength($email, 100)) {
+                echo json_encode(["success" => false, "message" => "Email must be 100 characters or less", "data" => null]);
                 exit();
             }
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email AND id != :user_id");
@@ -80,14 +85,24 @@ if ($method === "PUT") {
 
         // Phone
         if (isset($data["phone"])) {
+            $phone = trim($data["phone"]) ?: null;
+            if ($phone !== null && !isValidPhone($phone)) {
+                echo json_encode(["success" => false, "message" => "Phone number must be exactly 10 digits", "data" => null]);
+                exit();
+            }
             $fields[] = "phone = :phone";
-            $params[":phone"] = trim($data["phone"]) ?: null;
+            $params[":phone"] = $phone;
         }
 
         // Address
         if (isset($data["address"])) {
+            $address = trim($data["address"]) ?: null;
+            if ($address !== null && !isWithinLength($address, 255)) {
+                echo json_encode(["success" => false, "message" => "Address must be 255 characters or less", "data" => null]);
+                exit();
+            }
             $fields[] = "address = :address";
-            $params[":address"] = trim($data["address"]) ?: null;
+            $params[":address"] = $address;
         }
 
         // Academic Level
@@ -115,14 +130,11 @@ if ($method === "PUT") {
         // Date of Birth
         if (isset($data["dob"])) {
             $dob = $data["dob"];
-            $dobDate = DateTime::createFromFormat("Y-m-d", $dob);
-            if (!$dobDate || $dobDate->format("Y-m-d") !== $dob) {
+            if (!isValidDate($dob)) {
                 echo json_encode(["success" => false, "message" => "Invalid date of birth", "data" => null]);
                 exit();
             }
-            $today = new DateTime();
-            $age = $today->diff($dobDate)->y;
-            if ($age < 13) {
+            if (!isAtLeast13($dob)) {
                 echo json_encode(["success" => false, "message" => "You must be at least 13 years old", "data" => null]);
                 exit();
             }

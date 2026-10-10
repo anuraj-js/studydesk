@@ -4,6 +4,7 @@
 session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if (empty($_SESSION["user_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
@@ -21,18 +22,18 @@ $json = file_get_contents("php://input");
 $data = json_decode($json, true);
 
 $currentPassword = isset($data["current_password"]) ? $data["current_password"] : "";
-$newPassword = isset($data["new_password"]) ? $data["new_password"] : "";
+$newPassword     = isset($data["new_password"])     ? $data["new_password"]     : "";
 $confirmPassword = isset($data["confirm_password"]) ? $data["confirm_password"] : "";
 
 // All fields required
-if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+if (isEmpty($currentPassword) || isEmpty($newPassword) || isEmpty($confirmPassword)) {
     echo json_encode(["success" => false, "message" => "All fields are required", "data" => null]);
     exit();
 }
 
 // Validate new password
-if (strlen($newPassword) < 8 || !preg_match('/[a-zA-Z]/', $newPassword) || !preg_match('/[0-9]/', $newPassword)) {
-    echo json_encode(["success" => false, "message" => "Password must be at least 8 characters with letters and numbers", "data" => null]);
+if (!isValidPassword($newPassword)) {
+    echo json_encode(["success" => false, "message" => "Password must be 8–72 characters and include letters and numbers", "data" => null]);
     exit();
 }
 

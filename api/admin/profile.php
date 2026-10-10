@@ -4,6 +4,7 @@
 session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if (empty($_SESSION["admin_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
@@ -48,8 +49,8 @@ if ($method === "PUT") {
 
         if (isset($data["username"])) {
             $username = trim($data["username"]);
-            if (strlen($username) < 3) {
-                echo json_encode(["success" => false, "message" => "Username must be at least 3 characters", "data" => null]);
+            if (!isAlphanumericUsername($username)) {
+                echo json_encode(["success" => false, "message" => "Username must be 3-50 characters, contain only letters, numbers, or underscores, and cannot start with a number.", "data" => null]);
                 exit();
             }
             $stmt = $pdo->prepare("SELECT id FROM admins WHERE username = :username AND id != :admin_id");
@@ -64,8 +65,12 @@ if ($method === "PUT") {
 
         if (isset($data["email"])) {
             $email = trim($data["email"]);
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (!isValidEmail($email)) {
                 echo json_encode(["success" => false, "message" => "Please enter a valid email address", "data" => null]);
+                exit();
+            }
+            if (!isWithinLength($email, 100)) {
+                echo json_encode(["success" => false, "message" => "Email must be 100 characters or less", "data" => null]);
                 exit();
             }
             $stmt = $pdo->prepare("SELECT id FROM admins WHERE email = :email AND id != :admin_id");
