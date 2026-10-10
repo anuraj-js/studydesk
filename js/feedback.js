@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isSubmitting = false;
     const MAX_CHARS = 1000;
+    const MIN_CHARS = 10;
     let warningShown = false; // Track if approaching warning has been shown
     let exceededShown = false; // Track if exceeded warning has been shown
 
@@ -78,29 +79,45 @@ document.addEventListener('DOMContentLoaded', () => {
         const subject = subjectInput.value.trim();
         const message = messageTextarea.value.trim();
 
-        // Validation
-        if (!type) {
+        // Validate type
+        if (Validator.isEmpty(type)) {
             showToast('Please select a feedback type.', 'error');
             return;
         }
 
-        if (!subject) {
+        // Validate subject
+        if (Validator.isEmpty(subject)) {
             showToast('Please enter a subject.', 'error');
             return;
         }
 
-        if (!message) {
+        if (!Validator.hasLetters(subject)) {
+            showToast('Subject must contain at least one letter.', 'error');
+            return;
+        }
+
+        if (!Validator.isWithinLength(subject, 255)) {
+            showToast('Subject must be 255 characters or less.', 'error');
+            return;
+        }
+
+        // Validate message
+        if (Validator.isEmpty(message)) {
             showToast('Please enter a message.', 'error');
             return;
         }
 
-        if (message.length < 10) {
-            showToast('Message must be at least 10 characters.', 'error');
+        if (!Validator.hasLetters(message)) {
+            showToast('Message must contain at least one letter.', 'error');
             return;
         }
 
-        // Frontend character limit validation
-        if (message.length > MAX_CHARS) {
+        if (message.length < MIN_CHARS) {
+            showToast(`Message must be at least ${MIN_CHARS} characters.`, 'error');
+            return;
+        }
+
+        if (!Validator.isWithinLength(message, MAX_CHARS)) {
             showToast(`Message cannot exceed ${MAX_CHARS} characters.`, 'error');
             return;
         }
@@ -132,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Please wait'
                 ];
                 const isSpamMessage = spamMessages.some(msg => result.message.includes(msg));
-                
+
                 if (isSpamMessage) {
                     showToast(result.message, 'warning');
                 } else {

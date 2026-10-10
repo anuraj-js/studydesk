@@ -66,7 +66,6 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
                     <!-- Message -->
                     <div class="feedback-field feedback-field-textarea">
                         <label for="feedbackMessage">Message</label>
-                        <!-- REMOVED: maxlength="1000" — validation is handled by JS + PHP -->
                         <textarea id="feedbackMessage" placeholder="Describe your feedback in detail..." required rows="5"></textarea>
                         <span class="char-counter" id="charCounter"><span id="charCount">0</span> / 1000 characters</span>
                     </div>
@@ -88,6 +87,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
 
     <script src="../js/notification.js"></script>
     <script src="../js/sidebar.js"></script>
+    <script src="../js/validator.js"></script>
     <script src="../js/feedback.js"></script>
     <script src="../js/theme.js"></script>
 </body>

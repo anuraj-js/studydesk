@@ -4,6 +4,7 @@
 session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if (empty($_SESSION["user_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
@@ -25,38 +26,52 @@ $type = isset($data["type"]) ? trim($data["type"]) : "";
 $subject = isset($data["subject"]) ? trim($data["subject"]) : "";
 $message = isset($data["message"]) ? trim($data["message"]) : "";
 
-// Validate required fields
-if (empty($type)) {
+// Validate type
+if (isEmpty($type)) {
     echo json_encode(["success" => false, "message" => "Feedback type is required", "data" => null]);
     exit();
 }
 
-if (empty($subject)) {
+$validTypes = ["bug_report", "feature_request", "general_feedback", "support"];
+if (!in_array($type, $validTypes)) {
+    echo json_encode(["success" => false, "message" => "Invalid feedback type", "data" => null]);
+    exit();
+}
+
+// Validate subject
+if (isEmpty($subject)) {
     echo json_encode(["success" => false, "message" => "Subject is required", "data" => null]);
     exit();
 }
 
-if (empty($message)) {
+if (!hasLetters($subject)) {
+    echo json_encode(["success" => false, "message" => "Subject must contain at least one letter", "data" => null]);
+    exit();
+}
+
+if (!isWithinLength($subject, 255)) {
+    echo json_encode(["success" => false, "message" => "Subject must be 255 characters or less", "data" => null]);
+    exit();
+}
+
+// Validate message
+if (isEmpty($message)) {
     echo json_encode(["success" => false, "message" => "Message is required", "data" => null]);
     exit();
 }
 
-// Validate message length (minimum)
+if (!hasLetters($message)) {
+    echo json_encode(["success" => false, "message" => "Message must contain at least one letter", "data" => null]);
+    exit();
+}
+
 if (strlen($message) < 10) {
     echo json_encode(["success" => false, "message" => "Message must be at least 10 characters", "data" => null]);
     exit();
 }
 
-// Validate message length (maximum)
-if (strlen($message) > 1000) {
+if (!isWithinLength($message, 1000)) {
     echo json_encode(["success" => false, "message" => "Message cannot exceed 1000 characters", "data" => null]);
-    exit();
-}
-
-// Whitelist validation for type
-$validTypes = ["bug_report", "feature_request", "general_feedback", "support"];
-if (!in_array($type, $validTypes)) {
-    echo json_encode(["success" => false, "message" => "Invalid feedback type", "data" => null]);
     exit();
 }
 
