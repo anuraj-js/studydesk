@@ -4,6 +4,7 @@
 session_start();
 header("Content-Type: application/json");
 require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../config/validator.php");
 
 if (empty($_SESSION["user_id"])) {
     echo json_encode(["success" => false, "message" => "Unauthorized", "data" => null]);
@@ -61,8 +62,25 @@ if ($method === "POST") {
         $dueDate = isset($data["due_date"]) ? $data["due_date"] : "";
         $description = isset($data["description"]) ? (trim($data["description"]) ?: null) : null;
 
-        if (empty($title)) {
+        // Title validation
+        if (isEmpty($title)) {
             echo json_encode(["success" => false, "message" => "Title is required", "data" => null]);
+            exit();
+        }
+
+        if (!hasLetters($title)) {
+            echo json_encode(["success" => false, "message" => "Title must contain at least one letter", "data" => null]);
+            exit();
+        }
+
+        if (!isWithinLength($title, 255)) {
+            echo json_encode(["success" => false, "message" => "Title must be 255 characters or less", "data" => null]);
+            exit();
+        }
+
+        // Description validation (optional)
+        if ($description !== null && !isWithinLength($description, 1000)) {
+            echo json_encode(["success" => false, "message" => "Description must be 1000 characters or less", "data" => null]);
             exit();
         }
 
@@ -77,8 +95,7 @@ if ($method === "POST") {
             $priority = "medium";
         }
 
-        $date = DateTime::createFromFormat("Y-m-d", $dueDate);
-        if (!$date || $date->format("Y-m-d") !== $dueDate) {
+        if (!isValidDate($dueDate)) {
             echo json_encode(["success" => false, "message" => "Invalid due date format", "data" => null]);
             exit();
         }
@@ -146,8 +163,16 @@ if ($method === "PUT") {
 
         if (isset($data["title"])) {
             $title = trim($data["title"]);
-            if (empty($title)) {
+            if (isEmpty($title)) {
                 echo json_encode(["success" => false, "message" => "Title cannot be empty", "data" => null]);
+                exit();
+            }
+            if (!hasLetters($title)) {
+                echo json_encode(["success" => false, "message" => "Title must contain at least one letter", "data" => null]);
+                exit();
+            }
+            if (!isWithinLength($title, 255)) {
+                echo json_encode(["success" => false, "message" => "Title must be 255 characters or less", "data" => null]);
                 exit();
             }
             $fields[] = "title = :title";
@@ -175,8 +200,7 @@ if ($method === "PUT") {
         }
 
         if (isset($data["due_date"])) {
-            $date = DateTime::createFromFormat("Y-m-d", $data["due_date"]);
-            if (!$date || $date->format("Y-m-d") !== $data["due_date"]) {
+            if (!isValidDate($data["due_date"])) {
                 echo json_encode(["success" => false, "message" => "Invalid due date format", "data" => null]);
                 exit();
             }
@@ -190,8 +214,13 @@ if ($method === "PUT") {
         }
 
         if (array_key_exists("description", $data)) {
+            $description = isset($data["description"]) ? (trim($data["description"]) ?: null) : null;
+            if ($description !== null && !isWithinLength($description, 1000)) {
+                echo json_encode(["success" => false, "message" => "Description must be 1000 characters or less", "data" => null]);
+                exit();
+            }
             $fields[] = "description = :description";
-            $params[":description"] = isset($data["description"]) ? (trim($data["description"]) ?: null) : null;
+            $params[":description"] = $description;
         }
 
         if (empty($fields)) {

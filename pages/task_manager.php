@@ -112,7 +112,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
             <input type="hidden" id="taskId" value="">
             <div class="form-group">
                 <label for="taskTitle">Task name</label>
-                <input type="text" id="taskTitle" placeholder="e.g. Complete coding assignment" required>
+                <input type="text" id="taskTitle" placeholder="e.g. Complete coding assignment" required maxlength="255">
             </div>
             <div class="form-group">
                 <label for="taskType">Type</label>
@@ -137,7 +137,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
             </div>
             <div class="form-group">
                 <label for="taskDescription">Description <span class="optional">(optional)</span></label>
-                <textarea id="taskDescription" placeholder="Add details..." rows="4"></textarea>
+                <textarea id="taskDescription" placeholder="Add details..." rows="4" maxlength="1000"></textarea>
             </div>
             <button type="submit" id="submitBtn" class="btn btn-primary">Add task</button>
         </form>
@@ -147,6 +147,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
 
     <script src="../js/notification.js"></script>
     <script src="../js/sidebar.js"></script>
+    <script src="../js/validator.js"></script>
     <script src="../js/tasks.js"></script>
     <script src="../js/theme.js"></script>
 </body>

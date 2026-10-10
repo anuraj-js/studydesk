@@ -477,8 +477,30 @@ document.addEventListener('DOMContentLoaded', () => {
             description: descInput.value.trim() || null
         };
 
-        if (!data.title) {
-            showToast('Task name is required', 'error');
+        // Validate title
+        if (Validator.isEmpty(data.title)) {
+            showToast('Task name is required.', 'error');
+            return;
+        }
+
+        if (!Validator.hasLetters(data.title)) {
+            showToast('Task name must contain at least one letter.', 'error');
+            return;
+        }
+
+        if (!Validator.isWithinLength(data.title, 255)) {
+            showToast('Task name must be 255 characters or less.', 'error');
+            return;
+        }
+
+        // Validate description (optional)
+        if (data.description && !Validator.isWithinLength(data.description, 1000)) {
+            showToast('Description must be 1000 characters or less.', 'error');
+            return;
+        }
+
+        if (!data.due_date) {
+            showToast('Due date is required.', 'error');
             return;
         }
 
@@ -486,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
         if (dueDateInput.value < today) {
-            showToast('Due date cannot be in the past', 'error');
+            showToast('Due date cannot be in the past.', 'error');
             return;
         }
 
