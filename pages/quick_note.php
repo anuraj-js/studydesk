@@ -36,7 +36,7 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
             <!-- Page Header -->
             <div class="page-header">
                 <div class="page-header-icon">
-                    <i class="fas fa-sticky-note"></i>
+                    <i class="fas fa-sticky-note" aria-hidden="true"></i>
                 </div>
                 <div>
                     <h1>Quick Note</h1>
@@ -46,36 +46,39 @@ $darkMode = isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] == 1;
 
             <div class="quick-note-container">
                 <div class="quick-note-wrapper">
+                    <label for="quickNoteTextarea" class="sr-only">Quick note content</label>
                     <textarea 
                         id="quickNoteTextarea" 
                         class="quick-note-textarea" 
                         placeholder="Write something important..."
                         spellcheck="true"
+                        maxlength="10000"
+                        aria-describedby="noteStatus"
                     ></textarea>
 
                     <div class="quick-note-footer">
                         <div class="quick-note-stats">
                             <span class="char-counter" id="charCounter">
-                                <i class="fas fa-pencil-alt"></i> <span id="charCount">0</span> chars
+                                <i class="fas fa-pencil-alt" aria-hidden="true"></i> <span id="charCount">0</span> chars
                             </span>
                             <span class="word-counter" id="wordCounter">
-                                <i class="fas fa-font"></i> <span id="wordCount">0</span> words
+                                <i class="fas fa-font" aria-hidden="true"></i> <span id="wordCount">0</span> words
                             </span>
                         </div>
-                        <div class="quick-note-status" id="noteStatus">
-                            <span class="status-dot" id="statusDot"></span>
-                            <span class="status-text" id="statusText">
-                                <i class="fas fa-circle"></i> Ready
-                            </span>
+                        <div class="quick-note-status" id="noteStatus" role="status" aria-live="polite">
+                            <span class="status-dot" id="statusDot" aria-hidden="true"></span>
+                            <span class="status-text" id="statusText">Ready</span>
                         </div>
                     </div>
 
                     <div class="quick-note-actions">
-                        <button class="btn btn-danger btn-clear" id="clearNoteBtn">
-                            <i class="fas fa-trash"></i> Clear Note
+                        <button class="btn btn-danger btn-clear" id="clearNoteBtn" type="button">
+                            <i class="fas fa-trash" aria-hidden="true"></i> Clear Note
                         </button>
-                        <button class="btn btn-primary btn-save" id="saveNoteBtn">
-                            <i class="fas fa-save"></i> <span id="saveBtnText">Save Now</span> <span class="keyboard-hint">(Ctrl+S)</span>
+                        <button class="btn btn-primary btn-save" id="saveNoteBtn" type="button">
+                            <i class="fas fa-save" aria-hidden="true"></i>
+                            <span class="save-btn-label">Save Now</span>
+                            <span class="keyboard-hint">(Ctrl+S)</span>
                         </button>
                     </div>
                 </div>
