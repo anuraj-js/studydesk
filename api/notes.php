@@ -10,9 +10,14 @@ require_user_api();
 $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Read JSON body FIRST so we can check for _csrf inside it
+$input = json_decode(file_get_contents('php://input'), true);
+
 if ($method !== 'GET') {
     $headers = getallheaders();
-    $csrfToken = $headers['X-CSRF-Token'] ?? '';
+    // Look for the token in the header first, then fall back to the body
+    $csrfToken = $headers['X-CSRF-Token'] ?? ($input['_csrf'] ?? '');
+    
     if (!csrf_verify($csrfToken)) {
         json_response(null, 'Invalid CSRF token.', false, 403);
     }
@@ -25,7 +30,6 @@ try {
         json_response($stmt->fetchAll(), 'Notes fetched successfully.', true, 200);
     } 
     elseif ($method === 'POST') {
-        $input = json_decode(file_get_contents('php://input'), true);
         if (!$input) json_response(null, 'Invalid JSON payload.', false, 400);
 
         $action = $input['action'] ?? '';

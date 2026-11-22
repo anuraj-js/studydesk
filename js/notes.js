@@ -159,11 +159,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (saveTimeout) {
             clearTimeout(saveTimeout);
             if (activeNoteId) {
+                // Get the CSRF token from the meta tag
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
                 const payload = JSON.stringify({ 
                     action: 'update', 
                     id: activeNoteId, 
                     title: document.getElementById('editNoteTitle').value.trim() || 'Untitled Note', 
-                    body: document.getElementById('editNoteBody').value 
+                    body: document.getElementById('editNoteBody').value,
+                    _csrf: csrfToken // <-- Include the token in the body
                 });
                 navigator.sendBeacon('../api/notes.php', payload);
             }
