@@ -13,6 +13,7 @@
   <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL 8.0">
   <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript ES6+">
   <img src="https://img.shields.io/badge/Environment-Laragon-00B388?style=flat-square" alt="Laragon">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License: MIT">
 </p>
 
 ---
@@ -270,8 +271,15 @@ studydesk/
 ├── .htaccess
 ├── database.sql
 ├── index.php
+├── LICENSE
 └── README.md
 ```
+
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE)
 
 ---
 
