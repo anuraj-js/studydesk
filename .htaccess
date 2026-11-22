@@ -1,0 +1,7 @@
+# Block direct HTTP access to sensitive directories and files
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+RedirectMatch 403 ^/config/.*$
+RedirectMatch 403 ^/includes/.*$

@@ -1,0 +1,82 @@
+<?php
+require_once __DIR__ . '/../includes/user_layout.php';
+
+render_header('Pomodoro', 'pomodoro');
+?>
+
+<div class="card pomodoro-display">
+    <div class="mode-label" id="modeLabel">Focus Time</div>
+    <div class="timer-display" id="timerDisplay">25:00</div>
+    <div class="session-info" id="sessionInfo">0 focus sessions completed today</div>
+    
+    <button class="btn btn-ghost btn-sm" id="resetSessions" style="margin-bottom:1rem;font-size:0.75rem;">
+        <i class="fa-solid fa-rotate-left"></i> Reset Sessions
+    </button>
+    
+    <div class="timer-controls">
+        <button class="btn btn-ghost" id="resetBtn">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+        <button class="btn btn-primary" id="startBtn" style="min-width:110px">
+            <i class="fa-solid fa-play"></i> Start
+        </button>
+        <button class="btn btn-ghost" id="skipBtn">
+            <i class="fa-solid fa-forward-step"></i> Skip
+        </button>
+    </div>
+    <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+</div>
+
+<details class="card collapsible-card">
+    <summary class="section-title">
+        <i class="fa-solid fa-gear"></i> Settings
+    </summary>
+    <div>
+        <div class="settings-row">
+            <label>Focus</label>
+            <div class="settings-time-inputs">
+                <input type="number" id="setWork" min="0" max="90" />
+                <span class="settings-time-sep">min</span>
+                <input type="number" id="setWorkSec" min="0" max="59" />
+                <span class="settings-time-sep">sec</span>
+            </div>
+        </div>
+        <div class="settings-row">
+            <label>Short Break</label>
+            <div class="settings-time-inputs">
+                <input type="number" id="setShort" min="0" max="30" />
+                <span class="settings-time-sep">min</span>
+                <input type="number" id="setShortSec" min="0" max="59" />
+                <span class="settings-time-sep">sec</span>
+            </div>
+        </div>
+        <div class="settings-row">
+            <label>Long Break</label>
+            <div class="settings-time-inputs">
+                <input type="number" id="setLong" min="0" max="60" />
+                <span class="settings-time-sep">min</span>
+                <input type="number" id="setLongSec" min="0" max="59" />
+                <span class="settings-time-sep">sec</span>
+            </div>
+        </div>
+        <div class="settings-row">
+            <label>Long Break After (focus sessions)</label>
+            <input type="number" id="setLongAfter" min="1" max="10" />
+        </div>
+        
+        <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <button type="button" class="btn btn-ghost btn-sm" id="resetSettingsBtn">
+                <i class="fa-solid fa-rotate-left"></i> Reset to Default
+            </button>
+            <button type="button" class="btn btn-primary" id="saveSettingsBtn" style="transition: all 0.3s;">
+                <i class="fa-solid fa-floppy-disk"></i> <span id="saveBtnText">Save Settings</span>
+            </button>
+        </div>
+    </div>
+</details>
+
+<?php 
+render_footer('pomodoro.js'); 
+?>

@@ -1,0 +1,448 @@
+let cfg;
+let mode = 'work';
+let total = 0;
+let left = 0;
+let running = false;
+let tick = null;
+let doneWork = 0;
+let beepInterval = null;
+
+let endTime = null;
+let pausedLeft = null;
+
+const DEFAULT_TITLE = 'Pomodoro · StudyDesk';
+const alarmAudio = new Audio('../assets/audio/sound.mp3');
+alarmAudio.loop = true;
+
+function modeLabel() { return { work: 'Focus Time', short: 'Short Break', long: 'Long Break' }[mode]; }
+
+function modeSecs() {
+    return {
+        work:  (cfg.work_min * 60) + cfg.work_sec,
+        short: (cfg.short_min * 60) + cfg.short_sec,
+        long:  (cfg.long_min * 60) + cfg.long_sec
+    }[mode];
+}
+
+function fmt(s) {
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+
+function render() {
+    document.getElementById('timerDisplay').textContent = fmt(left);
+    document.getElementById('modeLabel').textContent = modeLabel();
+    document.getElementById('sessionInfo').textContent = doneWork + ' focus sessions completed today';
+
+    document.getElementById('startBtn').innerHTML = running
+        ? '<i class="fa-solid fa-pause"></i> Pause'
+        : '<i class="fa-solid fa-play"></i> Start';
+
+    const pct = total > 0 ? ((total - left) / total) * 100 : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function notify(msg) {
+    alarmAudio.currentTime = 0;
+    alarmAudio.play().catch(() => {});
+
+    if (navigator.vibrate) {
+        beepInterval = setInterval(() => {
+            navigator.vibrate([300, 100, 300]);
+        }, 2000);
+    }
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position:fixed; inset:0;
+        background:rgba(0,0,0,0.75);
+        backdrop-filter:blur(6px);
+        -webkit-backdrop-filter:blur(6px);
+        display:flex; align-items:center; justify-content:center;
+        z-index:9999; padding:2rem;
+        animation:fadeIn 0.2s ease;
+    `;
+
+    const box = document.createElement('div');
+    box.style.cssText = `
+        background:var(--surface);
+        border:1px solid var(--border);
+        border-radius:1.25rem;
+        padding:2.5rem 2rem;
+        text-align:center;
+        max-width:320px;
+        width:100%;
+        box-shadow:0 25px 60px rgba(0,0,0,0.5);
+        animation:slideUp 0.25s ease;
+    `;
+
+    box.innerHTML = `
+        <style>
+            @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+            @keyframes slideUp { from { transform:translateY(30px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+            @keyframes pulse { 0%,100% { transform:scale(1) } 50% { transform:scale(1.15) } }
+            #stopAlarmBtn:hover { filter:brightness(1.15); transform:scale(1.02); }
+            #stopAlarmBtn:active { transform:scale(0.97); }
+        </style>
+
+        <div style="
+            width:70px; height:70px;
+            background:var(--accent);
+            border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            margin:0 auto 1.25rem;
+            animation:pulse 1.2s ease infinite;
+            box-shadow:0 0 0 12px rgba(59,130,246,0.15);
+        ">
+            <i class="fa-solid fa-bell" style="font-size:1.75rem; color:#fff;"></i>
+        </div>
+
+        <div style="
+            font-size:0.75rem;
+            font-weight:600;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            color:var(--accent);
+            margin-bottom:0.5rem;
+        ">StudyDesk</div>
+
+        <div style="
+            font-size:1.15rem;
+            font-weight:700;
+            color:var(--text);
+            margin-bottom:0.4rem;
+            line-height:1.4;
+        ">${msg}</div>
+
+        <div style="
+            font-size:0.82rem;
+            color:var(--text-muted);
+            margin-bottom:1.75rem;
+        ">Tap below to stop the timer.</div>
+
+        <button id="stopAlarmBtn" style="
+            width:100%;
+            padding:0.85rem;
+            background:var(--accent);
+            color:#fff;
+            border:none;
+            border-radius:0.75rem;
+            font-size:1rem;
+            font-weight:700;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:0.5rem;
+            transition:filter 0.15s, transform 0.15s;
+            box-shadow:0 4px 15px rgba(59,130,246,0.35);
+        ">
+            <i class="fa-solid fa-stop"></i> Stop Timer
+        </button>
+    `;
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    document.getElementById('stopAlarmBtn').addEventListener('click', () => {
+        alarmAudio.pause();
+        alarmAudio.currentTime = 0;
+        clearInterval(beepInterval);
+        beepInterval = null;
+        document.body.removeChild(overlay);
+    });
+}
+
+async function recordSession() {
+    try {
+        const res = await apiFetch('../api/pomodoro.php', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'record' })
+        });
+        if (res.success) {
+            doneWork = res.data.count;
+        }
+    } catch (err) {
+        console.error('Failed to record session');
+    }
+}
+
+function onComplete() {
+    if (mode === 'work') {
+        doneWork++;
+        recordSession(); 
+        notify('Focus session done! Time for a break.');
+        mode = (doneWork % cfg.long_break_after === 0) ? 'long' : 'short';
+    } else {
+        notify('Break over! Back to work.');
+        mode = 'work';
+    }
+
+    total = modeSecs();
+    left = total;
+    endTime = null;
+    pausedLeft = null;
+    running = false;
+    
+    document.title = DEFAULT_TITLE; 
+    render();
+}
+
+function startPause() {
+    if (running) {
+        clearInterval(tick);
+        running = false;
+        pausedLeft = left;
+        document.title = DEFAULT_TITLE;
+    } else {
+        if (total === 0) {
+            showToast('Please set a duration greater than 0 seconds.', 'warning');
+            return;
+        }
+
+        // Unlock audio context on first user gesture
+        if (alarmAudio.paused) {
+            alarmAudio.volume = 0;
+            alarmAudio.play().then(() => {
+                alarmAudio.pause();
+                alarmAudio.currentTime = 0;
+                alarmAudio.volume = 1;
+            }).catch(() => {});
+        }
+
+        const secondsToRun = pausedLeft !== null ? pausedLeft : total;
+        left = secondsToRun;
+        pausedLeft = null;
+        endTime = Date.now() + secondsToRun * 1000;
+        running = true;
+
+        tick = setInterval(() => {
+            const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+            left = remaining;
+
+            if (remaining <= 0) {
+                clearInterval(tick);
+                running = false;
+                onComplete();
+                return;
+            }
+            
+            document.title = fmt(left) + ' · StudyDesk';
+            render();
+        }, 250);
+    }
+    render();
+}
+
+function reset() {
+    clearInterval(tick);
+    running = false;
+    total = modeSecs();
+    left = total;
+    endTime = null;
+    pausedLeft = null;
+    document.title = DEFAULT_TITLE;
+    render();
+}
+
+function skip() {
+    clearInterval(tick);
+    running = false;
+
+    if (mode === 'work') {
+        doneWork++;
+        recordSession();
+        mode = (doneWork % cfg.long_break_after === 0) ? 'long' : 'short';
+    } else {
+        mode = 'work';
+    }
+
+    total = modeSecs();
+    left = total;
+    endTime = null;
+    pausedLeft = null;
+    document.title = DEFAULT_TITLE;
+    render();
+}
+
+function validateSettings() {
+    const inputs = {
+        work: document.getElementById('setWork'),
+        workSec: document.getElementById('setWorkSec'),
+        short: document.getElementById('setShort'),
+        shortSec: document.getElementById('setShortSec'),
+        long: document.getElementById('setLong'),
+        longSec: document.getElementById('setLongSec'),
+        longAfter: document.getElementById('setLongAfter')
+    };
+
+    if (inputs.work.value < 0) inputs.work.value = 0;
+    if (inputs.work.value > 90) inputs.work.value = 90;
+    if (inputs.short.value < 0) inputs.short.value = 0;
+    if (inputs.short.value > 30) inputs.short.value = 30;
+    if (inputs.long.value < 0) inputs.long.value = 0;
+    if (inputs.long.value > 60) inputs.long.value = 60;
+
+    [inputs.workSec, inputs.shortSec, inputs.longSec].forEach(input => {
+        if (input.value < 0) input.value = 0;
+        if (input.value > 59) input.value = 59;
+    });
+
+    if (inputs.longAfter.value < 1) inputs.longAfter.value = 1;
+    if (inputs.longAfter.value > 10) inputs.longAfter.value = 10;
+}
+
+function markSettingsDirty() {
+    const btn = document.getElementById('saveSettingsBtn');
+    const btnText = document.getElementById('saveBtnText');
+    if (!btn || !btnText) return;
+    
+    // Change to warning color (Amber)
+    btn.style.background = 'var(--warning)';
+    btn.style.borderColor = 'var(--warning)';
+    btnText.textContent = 'Save Changes *';
+}
+
+function resetSettingsButton() {
+    const btn = document.getElementById('saveSettingsBtn');
+    const btnText = document.getElementById('saveBtnText');
+    if (!btn || !btnText) return;
+    
+    // Reset to primary color (Blue)
+    btn.style.background = 'var(--accent)';
+    btn.style.borderColor = 'var(--accent)';
+    btnText.textContent = 'Save Settings';
+}
+
+function resetToDefault() {
+    showDialog({
+        title: 'Reset Settings',
+        message: 'Are you sure you want to reset all Pomodoro settings to their original defaults?',
+        confirmText: 'Reset',
+        onConfirm: async () => {
+            document.getElementById('setWork').value = 25;
+            document.getElementById('setWorkSec').value = 0;
+            document.getElementById('setShort').value = 5;
+            document.getElementById('setShortSec').value = 0;
+            document.getElementById('setLong').value = 15;
+            document.getElementById('setLongSec').value = 0;
+            document.getElementById('setLongAfter').value = 4;
+
+            await applySettings();
+            showToast('Settings reset to default.', 'success');
+        }
+    });
+}
+
+async function applySettings() {
+    validateSettings();
+
+    cfg.work_min = parseInt(document.getElementById('setWork').value) || 0;
+    cfg.work_sec = parseInt(document.getElementById('setWorkSec').value) || 0;
+    cfg.short_min = parseInt(document.getElementById('setShort').value) || 0;
+    cfg.short_sec = parseInt(document.getElementById('setShortSec').value) || 0;
+    cfg.long_min = parseInt(document.getElementById('setLong').value) || 0;
+    cfg.long_sec = parseInt(document.getElementById('setLongSec').value) || 0;
+    cfg.long_break_after = parseInt(document.getElementById('setLongAfter').value) || 4;
+
+    try {
+        await apiFetch('../api/pomodoro.php', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'settings', ...cfg })
+        });
+        showToast('Settings saved.', 'success');
+        resetSettingsButton(); // Reset the color on success
+    } catch (err) {
+        showToast('Failed to save settings.', 'error');
+    }
+
+    if (!running) {
+        total = modeSecs();
+        left = total;
+        pausedLeft = null;
+        endTime = null;
+        render();
+    }
+}
+
+window.addEventListener('beforeunload', (e) => {
+    if (running) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await apiFetch('../api/pomodoro.php');
+        if (res.success) {
+            cfg = res.data.settings;
+            doneWork = res.data.today_sessions;
+            total = modeSecs();
+            left = total;
+
+            document.getElementById('setWork').value = cfg.work_min;
+            document.getElementById('setWorkSec').value = cfg.work_sec;
+            document.getElementById('setShort').value = cfg.short_min;
+            document.getElementById('setShortSec').value = cfg.short_sec;
+            document.getElementById('setLong').value = cfg.long_min;
+            document.getElementById('setLongSec').value = cfg.long_sec;
+            document.getElementById('setLongAfter').value = cfg.long_break_after;
+
+            render();
+            resetSettingsButton(); // Ensure button is blue on load
+        }
+    } catch (err) {
+        showToast('Failed to load Pomodoro settings.', 'error');
+    }
+
+    document.getElementById('startBtn').addEventListener('click', startPause);
+    document.getElementById('resetBtn').addEventListener('click', reset);
+    document.getElementById('skipBtn').addEventListener('click', skip);
+
+    ['setWork','setWorkSec','setShort','setShortSec','setLong','setLongSec','setLongAfter'].forEach(id => {
+        const el = document.getElementById(id);
+        
+        // Validate and mark dirty on input
+        el.addEventListener('input', () => {
+            validateSettings();
+            markSettingsDirty();
+        });
+        
+        // Prevent typing '-' or 'e'
+        el.addEventListener('keydown', (e) => {
+            if (e.key === '-' || e.key === 'e') e.preventDefault();
+        });
+    });
+
+    // Save Settings Button
+    document.getElementById('saveSettingsBtn').addEventListener('click', applySettings);
+
+    // Reset Settings Button
+    document.getElementById('resetSettingsBtn').addEventListener('click', resetToDefault);
+
+    document.getElementById('resetSessions').addEventListener('click', () => {
+        showDialog({
+            title: 'Reset Sessions',
+            message: 'Are you sure you want to reset today\'s focus session count to 0?',
+            confirmText: 'Reset',
+            onConfirm: async () => {
+                try {
+                    const res = await apiFetch('../api/pomodoro.php', {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'reset_sessions' })
+                    });
+                    
+                    if (res.success) {
+                        doneWork = 0;
+                        render();
+                        showToast('Session count reset.', 'success');
+                    } else {
+                        showToast(res.message, 'error');
+                    }
+                } catch (err) {
+                    showToast('Failed to reset sessions.', 'error');
+                }
+            }
+        });
+    });
+});
