@@ -10,16 +10,7 @@
 
 /* ── Small desktops / Tablets landscape ── */
 @media (max-width: 992px) {
-  .nav-links { gap: 0.1rem; }
-  .nav-links a {
-    padding: 0.4rem 0.5rem;
-    font-size: 0.8rem;
-  }
-}
-
-/* ── Tablets portrait / Mobile ── */
-@media (max-width: 768px) {
-  /* Hide the entire desktop menu on mobile */
+  /* Hide the entire desktop menu and switch to mobile hamburger */
   .nav-menu {
     display: none !important;
   }
@@ -49,7 +40,10 @@
     opacity: 1;
     visibility: visible;
   }
+}
 
+/* ── Tablets portrait / Mobile ── */
+@media (max-width: 768px) {
   /* Notes layout adjustments */
   .notes-container {
     height: calc(100dvh - 70px);
@@ -61,7 +55,7 @@
     margin-bottom: 0;
   }
 
-    /* ── Admin Table Mobile Optimization ── */
+  /* ── Admin Table Mobile Optimization ── */
   .hide-mobile {
       display: none !important;
   }
