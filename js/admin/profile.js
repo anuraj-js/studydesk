@@ -27,6 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loadProfile();
 
+    // Initialize the Unsaved Changes Tracker
+    initUnsavedChangesTracker(
+        ['profFullName'], 
+        'saveProfileBtn', 
+        'saveProfileBtnText'
+    );
+
     document.getElementById('togglePasswordForm').addEventListener('click', () => {
         const wrapper = document.getElementById('passwordFormWrapper');
         const chevron = document.getElementById('passwordChevron');
@@ -75,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (res.success) {
                 showToast('Profile updated successfully.', 'success');
+                window.resetProfileSaveBtn(); // <-- Reset the button color
             } else {
                 showToast(res.message, 'error');
             }

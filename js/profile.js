@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('profEmail').value = data.email;
                 document.getElementById('profFullName').value = data.full_name;
                 document.getElementById('profAcademicLevel').value = data.academic_level;
-                // Removed profDob population
                 
                 const genderRadio = document.querySelector(`input[name="profGender"][value="${data.gender}"]`);
                 if (genderRadio) genderRadio.checked = true;
@@ -30,6 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     loadProfile();
+
+    // Initialize the Unsaved Changes Tracker
+    initUnsavedChangesTracker(
+        ['profFullName', 'profAcademicLevel'], 
+        'saveProfileBtn', 
+        'saveProfileBtnText'
+    );
 
     document.getElementById('togglePasswordForm').addEventListener('click', () => {
         const wrapper = document.getElementById('passwordFormWrapper');
@@ -67,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
             action: 'update_profile',
             full_name: document.getElementById('profFullName').value.trim(),
             academic_level: document.getElementById('profAcademicLevel').value,
-            // Removed date_of_birth
             gender: document.querySelector('input[name="profGender"]:checked')?.value
         };
 
@@ -82,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (res.success) {
                 showToast('Profile updated successfully.', 'success');
+                window.resetProfileSaveBtn(); // <-- Reset the button color
             } else {
                 showToast(res.message, 'error');
             }

@@ -28,8 +28,8 @@ render_admin_header('Admin Profile', 'profile');
             <input type="text" id="profFullName" required />
         </div>
 
-        <button type="submit" class="btn btn-primary" id="saveProfileBtn" style="width: 100%;">
-            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+        <button type="submit" class="btn btn-primary" id="saveProfileBtn" style="width: 100%; transition: all 0.3s;">
+            <i class="fa-solid fa-floppy-disk"></i> <span id="saveProfileBtnText">Save Changes</span>
         </button>
     </form>
 </div>
