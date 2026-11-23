@@ -122,17 +122,29 @@ Point your web server document root to the project folder and ensure the `BASE_U
 
 ---
 
-### Step 5 — Create an Admin Account
+### Step 5 — Create the First Admin Account
 
-For security reasons, there is no Admin self-registration page. Admins are created directly in the database.
+For security reasons, public registration is restricted to **Students only**. The first Admin account must be created manually in the database. After this, the Admin can create more Admins via the Admin Dashboard UI.
 
-**a) Generate a bcrypt password hash:**
+**a) Generate a password hash:**
 
-```bash
-php -r "echo password_hash('your_strong_password', PASSWORD_BCRYPT);"
-```
+You can generate the bcrypt hash using either of the two methods below. Pick whichever is easier for you.
 
-You will get output like:
+- **Method A: Using your Browser (Recommended for Laragon users)**
+  1. Create a temporary file named `hash.php` in the project root
+  2. Paste this inside: `<?php echo password_hash('your_strong_password', PASSWORD_BCRYPT);`
+  3. Visit `http://localhost/studydesk/hash.php` in your browser
+  4. Copy the output hash
+  5. **Delete the `hash.php` file immediately**
+
+- **Method B: Using the Terminal**  
+  If PHP is in your system's PATH (or you are using the Laragon terminal), run:
+
+  ```bash
+  php -r "echo password_hash('your_strong_password', PASSWORD_BCRYPT);"
+  ```
+
+Both methods will give you an output like:
 
 ```
 $2y$10$Ss7DOKbqe/2HSKToppYiRupLCwkUM3iWSyjZhU3rJ4AFw//HhVMtu
@@ -140,20 +152,24 @@ $2y$10$Ss7DOKbqe/2HSKToppYiRupLCwkUM3iWSyjZhU3rJ4AFw//HhVMtu
 
 Copy the entire hash (it starts with `$2y$10$`).
 
-**b) Insert the admin account:**
+**b) Insert the first admin account:**
 
-Open phpMyAdmin, select the `studydesk` database, go to the **SQL** tab, and run the following query — replacing `YOUR_HASH_HERE` with the hash you generated:
+Open phpMyAdmin, select the `studydesk` database, go to the **SQL** tab, and run the following query — replacing `YOUR_HASH_HERE` with the hash you copied:
 
 ```sql
 INSERT INTO admins (username, email, password, full_name) 
 VALUES ('admin', 'admin@example.com', '$2y$10$YOUR_HASH_HERE', 'System Admin');
 ```
 
-> **Note:** The `admins` table only requires `username`, `email`, `password`, and `full_name` — not `academic_level`, `dob`, or `gender`.
+> **Note:** The `admins` table only requires `username`, `email`, `password`, and `full_name`.
 
 **c) Log in:**
 
 Go to `http://localhost/studydesk/`, select the **Admin** role on the login screen, and use the credentials you just created.
+
+**d) Create more Admins:**
+
+Once logged in, navigate to **Admins** in the top navbar. You can now use the **"Create New Admin"** form to add more administrators safely through the UI.
 
 ---
 
@@ -279,7 +295,9 @@ studydesk/
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE)
+This project is licensed under the **MIT License** — you are free to use, modify, and distribute this project for personal or commercial purposes, as long as the original license and copyright notice are included.
+
+See the [LICENSE](LICENSE) file for full details.
 
 ---
 
