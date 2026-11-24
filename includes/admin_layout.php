@@ -50,7 +50,7 @@ function render_admin_header(string $pageTitle, string $activePage): void {
 
     <nav class="navbar">
         <a href="home.php" class="nav-brand">
-            <img src="../../assets/images/studydesk_logo.svg" alt="StudyDesk" />
+            <img src="../../assets/images/studydesk_admin_logo.svg" alt="StudyDesk" />
         </a>
 
         <button class="hamburger" id="hamburgerBtn">
