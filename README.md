@@ -205,7 +205,8 @@ studydesk/
 │   ├── audio/
 │   │   └── sound.mp3
 │   └── images/
-│       └── studydesk_logo.svg
+│       ├── studydesk_logo.svg
+│       └── studydesk_admin_logo.svg
 │
 ├── config/
 │   └── db.php
